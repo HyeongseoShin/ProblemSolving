@@ -11,7 +11,7 @@ int main()
 
     cin >> n;
 
-    if(((n / 3) % 2 == 1 && (n % 3) % 2 == 0) || ((n / 3) % 2 == 0 && (n % 3) % 2 == 1)) cout << "SK\n";
+    if(n % 2 == 1) cout << "SK\n";
     else cout << "CY\n";
     
     return 0;
