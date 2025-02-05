@@ -1,3 +1,4 @@
+// https://www.acmicpc.net/problem/13549
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -12,10 +13,16 @@ void BFS(int x)
     dist[x] = 0;
     q.push(x);
 
+    if(x == k) return;
+
     while(!q.empty())
     {
         int cur = q.front();
         q.pop();
+
+        // cout << cur << "\n";
+
+        if(cur == k) break;
 
         if(cur*2 < 100010 && dist[cur*2] == -1)
         {
@@ -23,12 +30,6 @@ void BFS(int x)
             q.push(cur*2);
         }
 
-        if(cur*2 == k)
-        {
-            cout << dist[cur] << "\n";
-            return;
-        }
-        
         if(cur-1 >= 0 && dist[cur-1] == -1)
         {
             dist[cur-1] = dist[cur] + 1;
@@ -40,14 +41,6 @@ void BFS(int x)
             dist[cur+1] = dist[cur] + 1;
             q.push(cur+1);
         }
-
-        if(cur + 1 == k || cur - 1 == k)
-        {
-            cout << dist[cur] + 1 << "\n";
-            return;
-        }
-
-        
     }
 
 }
@@ -59,15 +52,11 @@ int main()
 
     cin >> n >> k;
 
-    if(n == k)
-    {
-        cout << "0\n";
-        return 0;
-    }
-
     fill(dist, dist + 100010, -1);
 
     BFS(n);
+
+    cout << dist[k] << "\n";
 
     return 0;
 }
