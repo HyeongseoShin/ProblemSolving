@@ -35,8 +35,6 @@ int main()
                     cnt += (int)v.size() - i;
                 }
             }
-
-            sort(v.begin(), v.end());
         }
 
         cout << t << " " << cnt << "\n";
