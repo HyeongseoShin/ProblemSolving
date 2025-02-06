@@ -11,21 +11,23 @@ int main()
     cin.tie(0);
 
     cin >> n;
-    
-    int cnt = 0;
-    int st = 1;
-    int en = 1;
 
-    while(true)
+    if(n == 1)
     {
-        if(st <= n && n <= en)
+        cout << "1\n";
+        return 0;
+    }
+    
+    int cnt = 1;
+    for(int i = 1; ; i++)
+    {
+        cnt += (i * 6);
+
+        if(n <= cnt)
         {
-            cout << cnt + 1 << "\n";
+            cout << i+1 << "\n";
             break;
         }
-        cnt++;
-        st = en + 1;
-        en = st + 6 * cnt - 1;
     }
 
     return 0;
