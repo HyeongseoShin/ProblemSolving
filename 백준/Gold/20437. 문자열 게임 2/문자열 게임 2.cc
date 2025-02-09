@@ -30,29 +30,31 @@ int main()
         // 3번과 4번은 똑같은 경우임
         // 3번에서 문자를 K개 포함하는 가장 짧은 문자열은 처음과 끝이 같을 수 밖에 없음!!
         
-        unordered_map<char, int> um;
+        unordered_map<char, vector<int>> um;
 
         for(int i = 0; i < wLen; i++)
         {
-            um[w[i]]++; // 각 알파벳 빈도수 구함
+            um[w[i]].push_back(i); // 각 알파벳의 위치 구함 (빈도는 size로 알 수 있음)
         }
 
-        for(int i = 0; i < wLen; i++)
+        for(auto [c, v] : um)
         {
-            if(um[w[i]] < k) continue; // k보다 작다면 시도X
-            
-            int cnt = 0;
-            for(int j = i; j < wLen; j++)
-            {
-                if(w[i] == w[j]) cnt++;
+            if(v.size() < k) continue; // k보다 작다면 시도 X
 
-                // 만들어진 문자열이 조건을 만족한다면 비교
-                if(cnt == k)
-                {
-                    minLen = min(minLen, j - i + 1); 
-                    maxLen = max(maxLen, j - i + 1);
-                    break;
-                }
+            int sz = v.size();
+
+            // 알파벳 위치 사이에 해당하는 알파벳이 (sz - k)개만 존재해야함
+            // 예) 빈도 수 3, k = 2일때
+            // 가능한 경우의 수: (0번째 ~ 1번째) or (1번째 ~ 2번째)
+            // (0번째 ~ 2번째) : 사이아 알파벳이 하나 더 있어 같은 알파벳이 3개라서 불가능
+            
+            for(int i = 0; i < sz - k + 1; i++)
+            {
+                int l = v[i];
+                int r = v[i + k - 1];
+
+                minLen = min(minLen, r - l + 1); 
+                maxLen = max(maxLen, r - l + 1);
             }
         }
 
