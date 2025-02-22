@@ -1,9 +1,3 @@
-// https://www.acmicpc.net/problem/2631
-// 스스로 못풂
-// LIS?
-// DP
-
-// 4% 틀렸습니다
 #include <bits/stdc++.h>
 
 using namespace std;
