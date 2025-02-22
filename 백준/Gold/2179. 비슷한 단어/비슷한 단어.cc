@@ -11,11 +11,6 @@ string t;
 
 int maxLen = 0;
 
-// bool cmp(string A, string B)
-// {
-//     return A.length() < B.length();
-// }
-
 int main()
 {
     ios::sync_with_stdio(0);
@@ -30,16 +25,6 @@ int main()
 
         v.push_back(input);
     }
-
-    // sort(v.begin(), v.end(), cmp);
-
-    // cout << "\n\n";
-    // for(string ss : v)
-    // {
-    //     cout << ss << "\n";
-    // }
-
-    // cout << "\n\n";
 
     for(int i = 0; i < n; i++)
     {
@@ -56,16 +41,12 @@ int main()
                 cnt++;
             }
 
-            // cout << "s: " << s << " t: " << t << " maxLen: " << maxLen << " cnt: " << cnt << "\n";
-
             if(cnt > maxLen)
             {
                 s = v[i];
                 t = v[j];
                 maxLen = cnt;
             }
-
-            
         }
     }
 
