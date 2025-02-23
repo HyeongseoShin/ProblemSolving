@@ -1,76 +1,44 @@
-// https://www.acmicpc.net/problem/1238
-// 다익스트라
 #include <bits/stdc++.h>
 
 using namespace std;
 
-int n, m, x;
-
-vector<pair<int, int>> adj[1005];
-
-int dstTo [1005];
-int dstFrom [1005];
-
-int ansTo[1005];
-
-void BFS(int now)
+void BFS(int now, vector<pair<int, int>>* tmpAdj, int* arr)
 {
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
     
-    if(now == x)
+    arr[now] = 0;
+    pq.push({now, arr[now]});
+
+    while(!pq.empty())
     {
-        dstFrom[now] = 0;
-        pq.push({now, dstFrom[now]});
+        auto [curV, curW] = pq.top();
+        pq.pop();
 
-        while(!pq.empty())
+        if(arr[curV] != curW) continue;
+
+        for(auto [nV, nW] : tmpAdj[curV])
         {
-            auto [curV, curW] = pq.top();
-            pq.pop();
-
-            if(dstFrom[curV] != curW) continue;
-
-            for(auto [nV, nW] : adj[curV])
+            if(arr[nV] > arr[curV] + nW)
             {
-                if(dstFrom[nV] > dstFrom[curV] + nW)
-                {
-                    dstFrom[nV] = dstFrom[curV] + nW;
-                    pq.push({nV, dstFrom[nV]});
-                }
+                arr[nV] = arr[curV] + nW;
+                pq.push({nV, arr[nV]});
             }
         }
     }
-
-    else
-    {
-        dstTo[now] = 0;
-        pq.push({now, dstTo[now]});
-
-        while(!pq.empty())
-        {
-            auto [curV, curW] = pq.top();
-            pq.pop();
-
-            if(dstTo[curV] != curW) continue;
-
-            for(auto [nV, nW] : adj[curV])
-            {
-                if(dstTo[nV] > dstTo[curV] + nW)
-                {
-                    dstTo[nV] = dstTo[curV] + nW;
-                    pq.push({nV, dstTo[nV]});
-                }
-            }
-        }
-
-        ansTo[now] = dstTo[x];
-    }
-
-    
 }
+
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
+
+    vector<pair<int, int>> adj[1005];
+    vector<pair<int, int>> reverseAdj[1005];
+
+    int dstTo [1005];
+    int dstFrom [1005];
+
+    int n, m, x;
 
     cin >> n >> m >> x;
 
@@ -80,32 +48,22 @@ int main()
         cin >> u >> v >> w;
 
         adj[u].push_back({v, w});
+        reverseAdj[v].push_back({u, w});
     }
 
-    for(int i = 1; i <= n; i++)
-    {
-        if(i == x)
-        {
-            fill(dstFrom, dstFrom + n + 1, INT_MAX);
-        }
-        
-        else fill(dstTo, dstTo + n + 1, INT_MAX);
+    fill(dstTo, dstTo + n + 1, INT_MAX);
+    fill(dstFrom, dstFrom + n + 1, INT_MAX);
 
-        BFS(i);
-        
-        
-    }
+    BFS(x, adj, dstFrom); // 정방향
+    BFS(x, reverseAdj, dstTo); // 역방향
 
     int ans = -1;
     for(int i = 1; i <= n; i++)
     {
-        if(ansTo[i] + dstFrom[i] > ans)
+        if(dstTo[i] + dstFrom[i] > ans)
         {
-            ans = ansTo[i] + dstFrom[i];
+            ans = dstTo[i] + dstFrom[i];
         }
-
-        // cout << dstFrom[i] << " ";
-        // cout << ansTo[i] << "\n";
     }
 
     cout << ans << "\n";
