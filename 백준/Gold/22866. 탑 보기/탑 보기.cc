@@ -37,9 +37,8 @@ int main()
         if(!stk.empty())
         {
             near[i] = stk.top();
+            cnt[i] = stk.size();
         }
-
-        cnt[i] += stk.size();
         
         stk.push(i);
     }
@@ -64,9 +63,9 @@ int main()
             {
                 near[i] = stk.top();
             }
+            
+            cnt[i] += stk.size();
         }
-
-        cnt[i] += stk.size();
         
         stk.push(i);
     }
