@@ -1,15 +1,13 @@
-// https://www.acmicpc.net/problem/1863
-
-// 7% 틀렸습니다
 #include <bits/stdc++.h>
 
 using namespace std;
 
 int n;
 
-stack<int> stk; // x 좌표는 필요 없음
+stack<int> stk;
 
 int ans = 0;
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -17,12 +15,13 @@ int main()
 
     cin >> n;
 
-    for(int i = 0; i <= n; i++)
-    {
+   for(int i = 0; i <= n; i++)
+   {
         int x, y;
 
         if(i < n) cin >> x >> y;
-        else y = 0; // 스택에 남아 있는 좌표 처리 위해 마지막 값에 y = 0 대입
+        else y = 0;
+        
 
         while(!stk.empty() && stk.top() >= y)
         {
