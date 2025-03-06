@@ -6,24 +6,22 @@ typedef long long ll;
 
 int n, k;
 
-// 가방의 최대 수용 무게
-// 가방에는 최대 하나의 보석만
-vector<ll> bags;
-
-// 보석 (무게, 가격)
-vector<pair<ll, ll>> jewels;
+// (무게, 가격)
+vector<pair<int, int>> jewels;
+vector<int> bags;
 
 struct cmp
 {
-    bool operator()(pair<ll, ll> a, pair<ll, ll> b)
+    bool operator() (pair<int, int> A, pair<int, int> B)
     {
-        if(a.second != b.second) return a.second < b.second;
-        return a.first > b.first;
+        if(A.second != B.second) return A.second < B.second;
+        else return A.first > B.first;
     }
+    
 };
 
-// 보석 (무게, 가격) => 비싸고, 가벼운 순으로 정렬
-priority_queue<pair<ll, ll>, vector<pair<ll, ll>>, cmp> pq;
+// pq ==> 비싸고 가벼운 순으로 정렬
+priority_queue<pair<int, int>, vector<pair<int, int>>, cmp> pq;
 
 int main()
 {
@@ -34,41 +32,45 @@ int main()
 
     for(int i = 0; i < n; i++)
     {
-        ll m, v;
+        int m, v;
 
         cin >> m >> v;
-
         jewels.push_back({m, v});
     }
-    
+
     for(int i = 0; i < k; i++)
     {
-        ll c;
-        cin >> c;
+        int w;
+        cin >> w;
 
-        bags.push_back(c);
+        bags.push_back(w);
     }
 
+    // 가방 : 가벼운 순으로 정렬
     sort(bags.begin(), bags.end());
-    sort(jewels.begin(), jewels.end()); // 가벼운 순으로 보석 정렬
+
+    // 보석 : 가벼운 순으로 정렬
+    sort(jewels.begin(), jewels.end());
 
     ll ans = 0;
     int idx = 0;
+
     for(int i = 0; i < k; i++)
     {
+        // 현재 가방에 담을 수 있으면 pq에 삽입
         while(idx < n && bags[i] >= jewels[idx].first)
         {
             pq.push(jewels[idx++]);
         }
 
+        // 큐가 비어있지 않다면 현재 가방에서 담을 수 있는 가장 비싼 보석은 top
         if(!pq.empty())
         {
             ans += pq.top().second;
             pq.pop();
-        } 
-
+        }
     }
-            
+
     cout << ans << "\n";
 
     return 0;
