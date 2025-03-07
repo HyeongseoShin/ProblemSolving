@@ -3,8 +3,10 @@
 using namespace std;
 
 int n;
-int v[202];
-int dp[202]; // dp[i] = i번째에서 끝나는 최장 증가 수열의 길이
+
+int dp[202];
+
+vector<int> v;
 
 int main()
 {
@@ -13,27 +15,30 @@ int main()
 
     cin >> n;
 
-    for(int i = 1; i <= n; i++)
+    for(int i = 0; i < n; i++)
     {
-        cin >> v[i];
+        int x;
+        cin >> x;
+
+        v.push_back(x);
     }
 
     int longest = 0;
-    for(int i = 1; i <= n; i++)
+
+    for(int i = 0; i < n; i++)
     {
         dp[i] = 1;
-        for(int j = 1; j < i; j++)
+        for(int j = 0; j < i; j++)
         {
             if(v[i] > v[j])
             {
                 dp[i] = max(dp[i], dp[j] + 1);
             }
         }
-
         longest = max(longest, dp[i]);
     }
 
-    cout << n - longest << "\n";
+    cout<< n - longest << "\n";
 
     return 0;
 }
