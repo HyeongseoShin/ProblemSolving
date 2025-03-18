@@ -4,9 +4,9 @@ using namespace std;
 
 int n;
 
-int ans = 0;
-
 vector<int> v;
+
+vector<int> ans;
 
 int main()
 {
@@ -16,6 +16,7 @@ int main()
     cin >> n;
 
     v.resize(n);
+    ans.resize(n);
 
     for(int i = 0; i < n; i++)
     {
@@ -24,35 +25,22 @@ int main()
 
     for(int i = 0; i < n; i++)
     {
-        int cur = 0;
-
-        double tmp = 0;
-
-        for(int j = i - 1; j >= 0; j--)
-        {
-            if(j == i - 1 || tmp > (double)(v[i] - v[j]) / (i - j))
-            {
-                cur++;
-                tmp = (double)(v[i] - v[j]) / (i - j);
-            }
-        }
-
-        tmp = 0;
+        double maxVal = -1000000000;
 
         for(int j = i + 1; j < n; j++)
         {
-            if(j == i + 1 || tmp < (double)(v[j] - v[i]) / (j - i))
+            double curVal = (v[j] - v[i]) * 1.0 / (j - i);
+
+            if(maxVal < curVal)
             {
-                cur++;
-                tmp = (double)(v[j] - v[i]) / (j - i);
+                maxVal = curVal;
+                ans[i]++;
+                ans[j]++;
             }
         }
-
-        ans = max(ans, cur);
     }
 
-    cout << ans << "\n";
-
+    cout << *max_element(ans.begin(), ans.end()) << "\n";
 
     return 0;
 }
