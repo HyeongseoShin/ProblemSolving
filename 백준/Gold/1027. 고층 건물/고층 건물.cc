@@ -1,15 +1,11 @@
-// https://www.acmicpc.net/problem/1027
-// 스스로 못 풂
-// 참고: https://sookr5416.tistory.com/222
-
-// 기울기 공식 까먹음
-// 나보다 더 낮거나 or 더 높은 건물만 볼 수 있는 줄 알았음
-// 기울기 : (y2 - y1) / (x2 - x1)
 #include <bits/stdc++.h>
 
 using namespace std;
 
 int n;
+
+int ans = 0;
+
 vector<int> v;
 
 int main()
@@ -19,46 +15,44 @@ int main()
 
     cin >> n;
 
+    v.resize(n);
+
     for(int i = 0; i < n; i++)
     {
-        int x;
-        cin >> x;
-
-        v.push_back(x);
+        cin >> v[i];
     }
 
-    int ans = 0;
     for(int i = 0; i < n; i++)
     {
-        int cnt = 0;
+        int cur = 0;
+
         double tmp = 0;
 
-        for(int j = i-1; j >= 0; j--)
+        for(int j = i - 1; j >= 0; j--)
         {
-            double slope = (double)(v[i] - v[j]) / (i - j);
-            if(j == i - 1 || slope < tmp)
+            if(j == i - 1 || tmp > (double)(v[i] - v[j]) / (i - j))
             {
-                cnt++;
-                tmp = slope;
+                cur++;
+                tmp = (double)(v[i] - v[j]) / (i - j);
             }
         }
 
         tmp = 0;
-        for(int j = i+1; j < n; j++)
+
+        for(int j = i + 1; j < n; j++)
         {
-            double slope = (double)(v[j] - v[i]) / (j - i);
-            if(j == i + 1 || slope > tmp)
+            if(j == i + 1 || tmp < (double)(v[j] - v[i]) / (j - i))
             {
-                cnt++;
-                tmp = slope;
+                cur++;
+                tmp = (double)(v[j] - v[i]) / (j - i);
             }
         }
 
-        ans = max(ans, cnt);
-
+        ans = max(ans, cur);
     }
 
     cout << ans << "\n";
-    
+
+
     return 0;
 }
