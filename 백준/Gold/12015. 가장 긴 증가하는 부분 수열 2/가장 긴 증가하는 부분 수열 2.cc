@@ -15,7 +15,7 @@ void FindPos(int target)
 
     while(st < en)
     {
-        mid = st + (en - st) / 2;
+        mid = (st + en) / 2;
 
         if(lis[mid] >= target) en = mid;
         else st = mid + 1;
