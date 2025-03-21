@@ -4,12 +4,12 @@ using namespace std;
 
 int n;
 
-vector<int> v;
 vector<int> lis;
+vector<int> v;
 vector<int> idx;
 vector<int> ans;
 
-int FindPos(int target)
+int GetPos(int target)
 {
     int st = 0;
     int en = lis.size() - 1;
@@ -18,9 +18,9 @@ int FindPos(int target)
     while(st < en)
     {
         mid = (st + en) / 2;
-
-        if(lis[mid] >= target) en = mid;
-        else st = mid + 1;
+        
+        if(target > lis[mid]) st = mid + 1;
+        else en = mid;
     }
 
     return en;
@@ -38,38 +38,35 @@ int main()
 
     for(int i = 0; i < n; i++)
     {
-        cin >> v[i];
+        cin >> v[i];        
     }
 
-    lis.push_back(v[0]);
-    idx[0] = 0;
-
-    for(int i = 1; i < n; i++)
+    for(int i = 0; i < n; i++)
     {
-        if(lis.back() >= v[i])
+        if(lis.empty() || lis.back() < v[i])
         {
-            int pos = FindPos(v[i]);
-            lis[pos] = v[i];
-            idx[i] = pos;
+            lis.push_back(v[i]);
+            idx[i] = lis.size() - 1;
         }
 
         else
         {
-            lis.push_back(v[i]);
-            idx[i] = lis.size() - 1;
+            int pos = GetPos(v[i]);
+            lis[pos] = v[i];
+            idx[i] = pos;
         }
     }
 
     cout << lis.size() << "\n";
 
-    int t = lis.size() - 1;
+    int cur = lis.size() - 1;
 
-    for(int i = n-1; i >= 0; i--)
+    for(int i = (int)idx.size() - 1; i >= 0; i--)
     {
-        if(idx[i] == t)
+        if(cur == idx[i])
         {
             ans.push_back(v[i]);
-            t--;
+            cur--;
         }
     }
 
