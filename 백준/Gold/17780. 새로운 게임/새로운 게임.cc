@@ -40,72 +40,76 @@ void Move(int x, int y, int dir)
 
         player[curStatus[x][y][0]].dir = dir;
 
-        if(nX < 1 || nX > n || nY < 1 || nY > n || chess[nX][nY] == 2)
-        {
-        }
+        // if(nX < 1 || nX > n || nY < 1 || nY > n || chess[nX][nY] == 2)
+        // {
+        // }
 
-        else
+        // else
+        // {
+        //     // 흰색
+        //     if(chess[nX][nY] == 0)
+        //     {
+        //         for(int i = 0; i < (int)curStatus[x][y].size(); i++)
+        //         {
+        //             curStatus[nX][nY].push_back(curStatus[x][y][i]);
+        //             player[curStatus[x][y][i]].x = nX;
+        //             player[curStatus[x][y][i]].y = nY;
+        //         }
+
+        //         curStatus[x][y].clear();
+        //     }
+
+        //     // 빨간색
+        //     else if(chess[nX][nY] == 1)
+        //     {
+        //         reverse(curStatus[x][y].begin(), curStatus[x][y].end());
+
+        //         for(int i = 0; i < (int)curStatus[x][y].size(); i++)
+        //         {
+        //             curStatus[nX][nY].push_back(curStatus[x][y][i]);
+        //             player[curStatus[x][y][i]].x = nX;
+        //             player[curStatus[x][y][i]].y = nY;
+        //         }
+
+        //         curStatus[x][y].clear();
+        //     }
+        // }
+    }
+
+    if(nX >= 1 && nX <= n && nY >= 1 && nY <= n)
+    {
+        // 흰색
+        if(chess[nX][nY] == 0)
         {
-            // 흰색
-            if(chess[nX][nY] == 0)
+            for(int i = 0; i < (int)curStatus[x][y].size(); i++)
             {
-                for(int i = 0; i < (int)curStatus[x][y].size(); i++)
-                {
-                    curStatus[nX][nY].push_back(curStatus[x][y][i]);
-                    player[curStatus[x][y][i]].x = nX;
-                    player[curStatus[x][y][i]].y = nY;
-                }
-
-                curStatus[x][y].clear();
+                curStatus[nX][nY].push_back(curStatus[x][y][i]);
+                player[curStatus[x][y][i]].x = nX;
+                player[curStatus[x][y][i]].y = nY;
             }
 
-            // 빨간색
-            else if(chess[nX][nY] == 1)
+            curStatus[x][y].clear();
+        }
+
+        // 빨간색
+        else if(chess[nX][nY] == 1)
+        {
+            reverse(curStatus[x][y].begin(), curStatus[x][y].end());
+
+            for(int i = 0; i < (int)curStatus[x][y].size(); i++)
             {
-                reverse(curStatus[x][y].begin(), curStatus[x][y].end());
-
-                for(int i = 0; i < (int)curStatus[x][y].size(); i++)
-                {
-                    curStatus[nX][nY].push_back(curStatus[x][y][i]);
-                    player[curStatus[x][y][i]].x = nX;
-                    player[curStatus[x][y][i]].y = nY;
-                }
-
-                curStatus[x][y].clear();
+                curStatus[nX][nY].push_back(curStatus[x][y][i]);
+                player[curStatus[x][y][i]].x = nX;
+                player[curStatus[x][y][i]].y = nY;
             }
-        }
-    }
 
-    // 흰색
-    else if(chess[nX][nY] == 0)
-    {
-        for(int i = 0; i < (int)curStatus[x][y].size(); i++)
-        {
-            curStatus[nX][nY].push_back(curStatus[x][y][i]);
-            player[curStatus[x][y][i]].x = nX;
-            player[curStatus[x][y][i]].y = nY;
+            curStatus[x][y].clear();
         }
 
-        curStatus[x][y].clear();
+        // 쌓인 말 최대 개수 확인
+        maxStackCnt = max(maxStackCnt, (int)curStatus[nX][nY].size());
     }
-
-    // 빨간색
-    else if(chess[nX][nY] == 1)
-    {
-        reverse(curStatus[x][y].begin(), curStatus[x][y].end());
-
-        for(int i = 0; i < (int)curStatus[x][y].size(); i++)
-        {
-            curStatus[nX][nY].push_back(curStatus[x][y][i]);
-            player[curStatus[x][y][i]].x = nX;
-            player[curStatus[x][y][i]].y = nY;
-        }
-
-        curStatus[x][y].clear();
-    }
-
-    // 쌓인 말 최대 개수 확인
-    maxStackCnt = max(maxStackCnt, (int)curStatus[nX][nY].size());
+    
 }
 
 int main()
