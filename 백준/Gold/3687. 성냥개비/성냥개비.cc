@@ -2,63 +2,70 @@
 
 using namespace std;
 
-typedef long long ll;
+int n;
 
-ll dp[101];
+// stick[i] : 성냥을 i개 썼을 때 만들 수 있는 가장 작은 수
+int stick[8] = {0, 0, 1, 7, 4, 2, 0, 8};
 
-// minNum[i] = 성냥 i개를 사용해 만들 수 있는 가장 작은 한 자리 수
-int minNum[8] = {0, 0, 1, 7, 4, 2, 0, 8};
+// dp[i] : 성냥개비 i를 사용해 만들 수 있는 최소값
+long long dp[105];
 
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    int n;
-
     cin >> n;
+
+    fill(dp, dp + 105, LLONG_MAX);
+
+    dp[2] = 1;
+    dp[3] = 7;
+    dp[4] = 4;
+    dp[5] = 2;
+    dp[6] = 6;
+    dp[7] = 8;
+    dp[8] = 10;
+
+    for(int i = 9; i <= 100; i++)
+    {
+        for(int j = 2; j <= 7; j++)
+        {
+            dp[i] = min(dp[i], dp[i-j] * 10 + stick[j]);
+        }
+        
+    }
 
     while(n--)
     {
-        int input;
-        cin >> input;
+        int t;
+        cin >> t;
 
-        // 최소 수 구하기
-        // dp[n] = n개의 성냥으로 구성 가능한 최솟값
-        fill(dp, dp + 101, LLONG_MAX);
+        // 가장 작은 수 - 최대한 많이 쓰면서 작은 수
+        cout << dp[t] << " ";
 
-        dp[1] = 1;
-        dp[2] = 1;
-        dp[3] = 7;
-        dp[4] = 4;
-        dp[5] = 2;
-        dp[6] = 6;
-        dp[7] = 8;
-
-        for(int i = 8; i <= input; i++)
+        // 가장 큰 수 (1 & 7로만 이루어짐)
+        string maxNum = "";
+        if(t % 2 == 0)
         {
-            for(int j = 2; j <= 7; j++)
+            for(int i = 0; i < t / 2; i++)
             {
-                dp[i] = min(dp[i], dp[i-j] * 10 + minNum[j]);
+                maxNum += "1";
             }
-            
         }
 
-        // 최대 수 구하기
-        // 홀수 = (input / 2 - 1)만큼 1, 맨 앞에 7
-        // 짝수 = (input / 2)만큼 1
-        string maxVal = "";
-        if(input % 2 == 1)
-        {
-            maxVal += '7';
-            for(int i = 0; i < (input / 2 -1); i++) maxVal += '1';
-        }
         else
         {
-            for(int i= 0; i < (input / 2); i++) maxVal += '1';
+            maxNum += "7";
+            for(int i = 0; i < t / 2 - 1; i++)
+            {
+                maxNum += "1";
+            }
         }
 
-        cout << dp[input] << " " << maxVal << "\n";
+        cout << maxNum << "\n";
+
+        
     }
 
     return 0;
