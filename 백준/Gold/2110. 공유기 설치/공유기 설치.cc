@@ -1,14 +1,10 @@
-// https://www.acmicpc.net/problem/2110
-
 #include <bits/stdc++.h>
 
 using namespace std;
 
 int n, c;
 
-vector<int> v;
-
-long long ans = 0;
+vector<int> home;
 
 int main()
 {
@@ -19,51 +15,46 @@ int main()
 
     for(int i = 0; i < n; i++)
     {
-        long long x;
+        int x;
         cin >> x;
 
-        v.push_back(x);
+        home.push_back(x);
     }
 
-    sort(v.begin(), v.end());
-    
-    long long st = 1;
-    long long en = v[n-1] - v[0];
-    long long mid;
+    sort(home.begin(), home.end());
+
+    int st = 0;
+
+    // 48% 틀렸습니다 원인 : 원래 en = MAX였음
+    int en = home[n - 1] - home[0];
+    int ans = 0;
 
     while(st <= en)
     {
-        mid = (st + en) / 2;
-        int cnt = 0;
-        int pos = 0;
+        // 현재 가장 가까운 거리
+        int mid = (st + en) / 2;
 
-        for(int i = 0; i < n; i++)
+        // 첫 번째 집은 무조건 설치
+        int pos = home[0];
+        int cnt = 1;
+        
+        for(int i = 1; i < n; i++)
         {
-            if(i == 0)
+            if(home[i] - pos >= mid)
             {
-                pos = i;
+                pos = home[i];
                 cnt++;
             }
-            else if(v[i] - v[pos] >= mid)
-            {
-                pos = i;
-                cnt++;
-            }
-
-            if(cnt >= c) break;
         }
 
-        if(cnt >= c)
-        {
-            ans = max(ans, mid);
-            st = mid + 1;
-        }
+        if(cnt < c) en = mid - 1;
         else
         {
-            en = mid - 1;
+            ans = mid;
+            st = mid + 1;
         }
-    }
-    
+    }  
+
     cout << ans << "\n";
 
     return 0;
