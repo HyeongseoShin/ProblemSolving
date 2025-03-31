@@ -6,7 +6,6 @@ int n;
 
 char board[10][10];
 
-vector<pair<int, int>> sPos;
 vector<pair<int, int>> tPos;
 vector<pair<int, int>> oPos;
 
@@ -54,7 +53,7 @@ void SetObstacles(int idx, int cnt)
 
     for(int k = idx; k < (int)oPos.size(); k++)
     {
-        if(isPossible) continue;
+        if(isPossible) return;
 
         auto [curX, curY] = oPos[k];
 
@@ -79,30 +78,11 @@ int main()
         {
             cin >> board[i][j];
 
-            // if(board[i][j] == 'S') sPos.push_back({i, j});
             if(board[i][j] == 'X') oPos.push_back({i, j});
             if(board[i][j] == 'T') tPos.push_back({i, j});
         }
     }
 
-    // // 장애물 설치 위치 후보 리스트 저장
-    // for(int i = 0; i < (int)sPos.size(); i++)
-    // {
-    //     auto [curX, curY] = sPos[i];
-
-    //     for(int dir = 0; dir < 4; dir++)
-    //     {
-    //         int nX = curX + dx[dir];
-    //         int nY = curY + dy[dir];
-
-    //         if(nX < 0 || nX >= n || nY < 0 || nY >= n) continue;
-    //         if(board[nX][nY] != 'X') continue;
-
-    //         oPos.push_back({nX, nY});
-    //     }
-    // }
-
-    // oPos.erase(unique(oPos.begin(), oPos.end()), oPos.end());
     SetObstacles(0, 0);
 
     if(isPossible) cout << "YES\n";
