@@ -4,9 +4,10 @@ using namespace std;
 
 int n, m;
 
-long long dp[1005][1005]; // dp[i][j] : (i,j)까지 왔을 때 최댓값
-long long l[1005][1005];
-long long r[1005][1005];
+// dp[i][j] : [i][j]까지 탐사했을 때 최대 가치의 합
+int dp[1005][1005];
+int l[1005][1005];
+int r[1005][1005];
 
 int main()
 {
@@ -24,38 +25,35 @@ int main()
         }
     }
 
-
-    // 0번째 행은 무조건 왼쪽에서 오는 것만 가능
-    for(int i = 1; i < m; i++)
+    // 0행은 오른쪽으로만 진행할 수 있음
+    for(int j = 1; j < m; j++)
     {
-        dp[0][i] += dp[0][i-1];
+        dp[0][j] = dp[0][j] + dp[0][j-1];
     }
 
-    // 1번째 행부터는 왼쪽에서부터 오는 값 vs 오른쪽에서부터 오는 값 비교 후 더 큰 값 선택
-    
+    // 1행 부터는 (위쪽 vs 왼쪽) vs (위쪽 vs 오른쪽) 값 중 최댓값을 고르자
     for(int i = 1; i < n; i++)
     {
-        r[i][m-1] = dp[i-1][m-1] + dp[i][m-1];
-        for(int j = m-2; j >= 0; j--)
-        {
-            // 왼쪽, 오른쪽으로 순회중 위쪽 값과 비교해 더 큰 값을 저장
-            r[i][j] = max(r[i][j + 1], dp[i-1][j]) + dp[i][j];
-        }
-
-        l[i][0] = dp[i-1][0] + dp[i][0];
+        // 위쪽 vs 왼쪽
+        l[i][0] = l[i][0] + dp[i-1][0];
         for(int j = 1; j < m; j++)
         {
-            // 왼쪽, 오른쪽으로 순회중 위쪽 값과 비교해 더 큰 값을 저장
-            l[i][j] = max(l[i][j - 1], dp[i-1][j]) + dp[i][j];
+            l[i][j] = max(l[i][j-1], dp[i-1][j]) + l[i][j];
         }
 
+        // 위쪽 vs 오른쪽
+        r[i][m-1] = r[i][m-1] + dp[i-1][m-1];
+        for(int j = m-2; j >= 0; j--)
+        {
+            r[i][j] = max(r[i][j+1], dp[i-1][j]) + r[i][j];
+        }
+
+        // 최종
         for(int j = 0; j < m; j++)
         {
             dp[i][j] = max(l[i][j], r[i][j]);
         }
     }
-
-
 
     // for(int i = 0; i < n; i++)
     // {
@@ -67,6 +65,7 @@ int main()
     // }
 
     cout << dp[n-1][m-1] << "\n";
+
 
     return 0;
 }
