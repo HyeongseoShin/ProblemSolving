@@ -39,6 +39,7 @@ void FindOutAir(int x, int y)
             cheese[nX][nY] = -1;
             vis[nX][nY] = true;
             q.push({nX, nY});
+            
         }
     }
 }
@@ -71,10 +72,11 @@ void RemoveCheese()
         auto [curX, curY] = q.front();
         q.pop();
 
-        cheese[curX][curY] = 0;
+        cheese[curX][curY] = -1;
         cnt--;
     }
 }
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -92,12 +94,16 @@ int main()
         }
     }
 
+    
+
     int ans = 0;
     while(cnt > 0)
     {
         ans++;
         // 2차원 배열 초기화
         memset(vis, 0, sizeof(vis));
+
+        // 외부 공기 찾기
         FindOutAir(0, 0);
         RemoveCheese();
     }
