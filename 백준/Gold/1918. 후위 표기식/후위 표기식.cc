@@ -50,12 +50,6 @@ int main()
             {
                while(!stk.empty() && stk.top() != '(' && um[stk.top()] <= um[cur])
                {
-                    if(stk.top() == '(' || stk.top() == ')')
-                    {
-                        stk.pop();
-                        continue;
-                    }
-
                     ans += stk.top();
                     stk.pop();
                }
@@ -63,20 +57,6 @@ int main()
                stk.push(cur);
                  
             }
-            // while(!stk.empty() && stk.top() != '(' && um[stk.top()] <= um[cur])
-            // {
-            //     if(stk.top() == '(' || stk.top() == ')')
-            //     {
-            //         stk.pop();
-            //         continue;
-            //     }
-
-            //     cout << um[stk.top()] << " " << um[cur] << "\n";
-            //     ans += stk.top();
-            //     stk.pop();
-            // }
-
-            
         }
 
         else
@@ -87,11 +67,6 @@ int main()
 
     while(!stk.empty())
     {
-        if(stk.top() == '(' || stk.top() == ')')
-        {
-            stk.pop();
-            continue;
-        }
         ans += stk.top();
         stk.pop();
     }
