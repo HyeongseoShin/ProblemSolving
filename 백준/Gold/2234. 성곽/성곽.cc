@@ -18,8 +18,11 @@ vector<int> area;
 
 bool vis[55][55];
 
-// 벽 하나 부쉈을 때 만들 수 있는 최대 방 크기
+// 가장 큰 방의 크기
 int maxArea = 0;
+
+// 벽 하나 부쉈을 때 만들 수 있는 최대 방 크기
+int sumArea = 0;
 
 void MakeRoom(int x, int y, int idx)
 {
@@ -55,10 +58,11 @@ void MakeRoom(int x, int y, int idx)
         }
     }
 
+    maxArea = max(maxArea, cnt);
     area.push_back(cnt);
 }
 
-void GetMaxArea(int x, int y, int idx)
+void GetsumArea(int x, int y, int idx)
 {
     queue<pair<int, int>> q;
     q.push({x, y});
@@ -88,7 +92,7 @@ void GetMaxArea(int x, int y, int idx)
             // 다른 방이면 방 2개 합친 크기 구하기
             else
             {   
-                maxArea = max(maxArea, area[idx-1] + area[room[nX][nY] - 1]);
+                sumArea = max(sumArea, area[idx-1] + area[room[nX][nY] - 1]);
             }
 
         }
@@ -129,31 +133,13 @@ int main()
         for(int j = 0; j < m; j++)
         {
             if(vis[i][j]) continue;
-            GetMaxArea(i, j, room[i][j]);
+            GetsumArea(i, j, room[i][j]);
         }
     }
 
-    // for(int i = 0; i < n; i++)
-    // {
-    //     for(int j = 0; j < m; j++)
-    //     {
-    //         cout << room[i][j] << " ";
-    //     }
-    //     cout << "\n";
-    // }
-
-    // cout << "\n";
-    // for(int i = 0; i < (int)area.size(); i++)
-    // {
-    //     cout << area[i] << " ";
-    // }
-    // cout << "\n";
-
-    sort(area.begin(), area.end(), greater<>());
-
     cout << roomIdx - 1 << "\n";
-    cout << area[0] << "\n";
     cout << maxArea << "\n";
+    cout << sumArea << "\n";
 
     return 0;
 }
