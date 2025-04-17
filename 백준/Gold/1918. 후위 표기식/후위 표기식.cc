@@ -6,14 +6,10 @@ string s;
 
 unordered_map<char, int> um;
 
-string ans;
-
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-
-    cin >> s;
 
     um['('] = 0;
     um[')'] = 0;
@@ -24,55 +20,51 @@ int main()
     um['+'] = 2;
     um['-'] = 2;
 
-    stack<char> stk;
+    cin >> s;
 
+    stack<char> stk;
     for(int i = 0; i < (int)s.length(); i++)
     {
         char cur = s[i];
-
+        
+        if('A' <= cur && cur <= 'Z') cout << cur;
+        
         // 기호라면
-        if(um.find(cur) != um.end())
+        else
         {
-            // '(' 만날 때까지 pop
+            // 괄호 끝날 때까지 
             if(cur == ')')
             {
                 while(!stk.empty() && stk.top() != '(')
                 {
-                    ans += stk.top();
+                    cout << stk.top();
                     stk.pop();
                 }
 
-                // stack이 비지 않으면 마지막 '(' 제거
-                if(!stk.empty()) stk.pop();
+                // if(!stk.empty()) stk.pop();
+                stk.pop();
             }
-
+            
             else
             {
-               while(!stk.empty() && stk.top() != '(' && um[stk.top()] <= um[cur])
-               {
-                    ans += stk.top();
+                while(!stk.empty() && stk.top() != '(' && um[stk.top()] <= um[cur])
+                {
+                    cout << stk.top();
                     stk.pop();
-               }
+                }
 
-               stk.push(cur);
-                 
+                stk.push(cur);
             }
-        }
-
-        else
-        {
-            ans += cur;
         }
     }
 
     while(!stk.empty())
     {
-        ans += stk.top();
+        cout << stk.top();
         stk.pop();
     }
 
-    cout << ans << "\n";
-
+    cout << "\n";
 
     return 0;
 }
