@@ -39,6 +39,7 @@ void BFS(int x, int y)
             if(nX < 0 || nX >= h || nY < 0 || nY >= w) continue;
             if(board[nX][nY] == '*') continue;
 
+            // 방향이 다르면 거울 설치
             if(i != curDir)
             {
                 if(mirror[nX][nY][i] > mirror[curX][curY][curDir] + 1)
@@ -48,6 +49,7 @@ void BFS(int x, int y)
                 }
             }
 
+            // 방향 같으면 그대로
             else
             {
                 if(mirror[nX][nY][i] > mirror[curX][curY][curDir])
@@ -95,26 +97,16 @@ int main()
     auto [x, y] = cPos[0];
     BFS(x, y);
 
-    // for(int i = 0; i < h; i++)
-    // {
-    //     for(int j = 0; j < w; j++)
-    //     {
-    //         cout.width(10);
-    //         cout << mirror[i][j] << " ";
-    //     }
-    //     cout << "\n";
-    // }
-
     auto [ansX, ansY] = cPos[1];
-    
     int ans = INT_MAX;
+
+    // 도착 지점 4방향 중 거울 개수 최소 뽑기
     for(int i = 0; i < 4; i++)
     {
         ans = min(ans, mirror[ansX][ansY][i]);
     }
 
     cout << ans << "\n";
-
 
     return 0;
 }
