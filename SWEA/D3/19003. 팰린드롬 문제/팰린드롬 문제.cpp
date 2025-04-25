@@ -32,14 +32,14 @@ int main()
         {
             for(int i = 0; i < (int)v.size() - 1; i++)
             {
-                if(v[i] == "") continue;
+                // if(v[i] == "") continue;
                 for(int j = i + 1; j < (int)v.size(); j++)
                 {
-                    if(v[j] == "") continue;
+                    // if(v[j] == "") continue;
                     if(v[i] == string(v[j].rbegin(), v[j].rend()))
                     {
-                        v[i] = "";
-                        v[j] = "";
+                        // v[i] = "";
+                        // v[j] = "";
                         cnt += 2;
                         break;
                     }
