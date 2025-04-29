@@ -4,15 +4,6 @@ using namespace std;
 
 typedef long long ll;
 
-bool CheckNotPrime(ll x)
-{
-    for(int i = 2; i < x; i++)
-    {
-        if(x % i == 0) return true;
-    }
-    
-    return false;
-}
 int main()
 {
     ios::sync_with_stdio(0);
@@ -26,14 +17,7 @@ int main()
         ll n;
         cin >> n;
         
-       for(ll i = 4; i <= 1000000000; i++)
-       {
-           if(CheckNotPrime(i) && CheckNotPrime(i + n))
-           {
-               cout << "#" << t << " " << i+n << " " << i << "\n";
-               break;
-           }
-       }
+       cout << "#" << t << " " << 9 * n << " " << 8 * n << "\n";
         
     }
     return 0;
