@@ -15,17 +15,11 @@ int main()
         int n, d;
         cin >> n >> d;
         
-
         int sz = 1 + 2 * d;
-        int idx = sz;
         int ans = 1;
         
-        while(idx < n)
-        {
-            idx += sz;
-            ans++;
-        }
-        
+        if(n % sz == 0) ans = n / sz;
+        else ans = n / sz + 1;
         cout << "#" << t << " " << ans << "\n";
     }
     return 0;
