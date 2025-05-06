@@ -1,5 +1,3 @@
-// https://www.acmicpc.net/problem/10159
-
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -58,10 +56,7 @@ int main()
     {
         fill(vis, vis + n + 1, false);
         BFS(i, adjBigger, true);
-    }
 
-    for(int i = 1; i <= n; i++)
-    {
         fill(vis, vis + n + 1, false);
         BFS(i, adjSmaller, false);
     }
