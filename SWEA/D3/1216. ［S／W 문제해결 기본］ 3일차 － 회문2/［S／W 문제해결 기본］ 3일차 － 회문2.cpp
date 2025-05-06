@@ -2,6 +2,41 @@
 
 using namespace std;
 
+int GetMaxLenPalindrome(string target)
+{
+    int ret = 1;
+    
+    // 홀수 길이 문자의 팰린드롬 검사
+    for(int i = 0; i < 100; i++)
+    {
+        int l = i;
+        int r = i;
+        
+        while(l >= 0 && r < 100 & target[l] == target[r])
+        {
+            ret = max(ret, r - l + 1);
+            l--;
+            r++;
+        }
+        
+    }
+    
+    // 짝수 길이 문자의 팰린드롬 검사
+    for(int i = 0; i < 99; i++)
+    {
+        int l = i;
+        int r = i + 1;
+        
+        while(l >= 0 && r < 100 & target[l] == target[r])
+        {
+            ret = max(ret, r - l + 1);
+            l--;
+            r++;
+        }
+    }
+    
+    return ret;
+}
 int main()
 {
     ios::sync_with_stdio(0);
@@ -12,56 +47,36 @@ int main()
         int n;
         cin >> n;
         
-        char board[100][100];
+        vector<string> v;
         
         for(int i = 0; i < 100; i++)
         {
             string s;
             cin >> s;
-            
-            for(int j = 0; j < 100; j++)
-            {
-                board[i][j] = s[j];
-            }
+            v.push_back(s);
         }
         
         int ans = 1;
+        
+        // 가로 검사
+        for(auto s : v)
+        {
+            ans = max(ans, GetMaxLenPalindrome(s));
+        }
+        
+        // 세로 검사
+        
         for(int i = 0; i < 100; i++)
         {
+            string tmp;
             for(int j = 0; j < 100; j++)
             {
-                for(int k = 99; k > j; k--)
-                {
-            		int st = j;
-                    int en = k;
-
-                    while(st <= en && board[i][st] == board[i][en])
-                    {
-                        st++;
-                        en--;
-                    }
-                    
-                    if(board[i][st] == board[i][en]) ans = max(ans, k - j + 1);
-                }
-                
-                
-                for(int k = 99; k > i; k--)
-                {
-            		int st = i;
-                    int en = k;
-                    
-                    while(st <= en && board[st][j] == board[en][j])
-                    {
-                        st++;
-                        en--;
-                    }
-                    
-                    if(board[st][j] == board[en][j]) ans = max(ans, k - i + 1);
-                }
-                
+                tmp += v[j][i];
             }
-        }
             
+            ans = max(ans, GetMaxLenPalindrome(tmp));
+        }
+        
         cout << "#" << n << " " << ans << "\n";
     }
     return 0;
