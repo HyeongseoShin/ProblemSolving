@@ -16,43 +16,24 @@ int main()
         
         cin >> n >> m >> k;
         
-		priority_queue<int, vector<int>, greater<>> pq;
+        vector<int> v;
         
         for(int i = 0; i < n; i++)
         {
             int x;
             cin >> x;
-            pq.push(x);
+            v.push_back(x);
         }
         
-        int cnt = 0;
-        int curTime = 0;
-        int makeTime = 0;
+        sort(v.begin(), v.end());
         
         bool isPossible = true;
-        while(!pq.empty())
+        for(int i = 0; i < n; i++)
         {
-            // cout << "curTime: " << curTime << " pq.top() : " << pq.top() << " cnt: " << cnt << "\n";
-            while(!pq.empty() && curTime == pq.top())
+            if((v[i] / m) * k - i - 1 < 0)
             {
-                pq.pop();
-                cnt--;
-                if(cnt < 0)
-                {
-                    isPossible = false;
-                    break;
-                }
-            }
-            
-            if(!isPossible) break;
-            
-            curTime++;
-            makeTime++;
-            
-            if(makeTime == m)
-            {
-                cnt += k;
-                makeTime = 0;
+                isPossible = false;
+                break;
             }
         }
         
