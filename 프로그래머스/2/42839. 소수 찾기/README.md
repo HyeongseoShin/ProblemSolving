@@ -1,10 +1,10 @@
 # [level 2] 소수 찾기 - 42839 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42839#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42839) 
 
 ### 성능 요약
 
-메모리: 3.67 MB, 시간: 126.92 ms
+메모리: 4.16 MB, 시간: 0.69 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2025년 05월 05일 21:40:43
+2025년 05월 08일 16:59:32
 
 ### 문제 설명
 
