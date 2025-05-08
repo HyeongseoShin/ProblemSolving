@@ -2,29 +2,28 @@
 
 using namespace std;
 
-bool cmp(string A, string B)
+bool cmp (string A, string B)
 {
-    return A + B > B + A;
+    return stoi(A+B) > stoi(B+A);
 }
-
 string solution(vector<int> numbers) {
     string answer = "";
     
     vector<string> v;
-    
-    for(auto num : numbers)
+    for(int i = 0; i < (int)numbers.size(); i++)
     {
-        v.push_back(to_string(num));
+        
+        v.push_back(to_string(numbers[i]));
     }
     
+    sort(v.begin(), v.end(), greater<>());
     sort(v.begin(), v.end(), cmp);
     
-    for(auto s : v)
+    for(int i = 0; i < (int)v.size(); i++)
     {
-        answer += s;
+        answer += v[i];
     }
     
-    if(answer == string(answer.length(), '0')) answer = "0";
-    
+    if(answer[0] == '0') return "0";
     return answer;
 }
