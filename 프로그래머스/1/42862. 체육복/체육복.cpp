@@ -2,49 +2,46 @@
 
 using namespace std;
 
+// 1 : 여분 있음
+// 0 : 체육복 있음
+// -1 : 체육복 없음
+int student[31];
+
 int solution(int n, vector<int> lost, vector<int> reserve) {
-    int answer = n - (int)lost.size();
+    int answer = 0;
     
-    bool hasClothes[31];
-    
-    fill(hasClothes, hasClothes + 31, true);
+    for(int i = 0; i < (int)reserve.size(); i++)
+    {
+        student[reserve[i]]++;    
+    }
     
     for(int i = 0; i < (int)lost.size(); i++)
     {
-        hasClothes[lost[i]] = false;
+        student[lost[i]]--;
     }
     
-    for(int i = 0; i < (int)reserve.size(); i++)
+    for(int i = 1; i <= n; i++)
     {
-        if(!hasClothes[reserve[i]])
+        if(student[i] == -1)
         {
-            hasClothes[reserve[i]] = true;
-            answer++;
-            
-            reserve.erase(reserve.begin() + i);
-            i--;
+            if(i - 1 >= 1 && student[i-1] >= 1)
+            {
+                student[i-1]--;
+                student[i]++;
+            }
+            else if(i + 1 <= n && student[i+1] >= 1)
+            {
+                student[i+1]--;
+                student[i]++;
+            }
         }
     }
     
-    sort(reserve.begin(), reserve.end());
-    
-    for(int i = 0; i < (int)reserve.size(); i++)
+    for(int i = 1; i <= n; i++)
     {
-        int prev = reserve[i] - 1;
-        int nxt = reserve[i] + 1;
-                
-        if(prev >= 1 && !hasClothes[prev])
-        {
-            hasClothes[prev] = true;
-            answer++;
-        }
-        
-        else if(nxt <= n && !hasClothes[nxt])
-        {
-            hasClothes[nxt] = true;
-            answer++;
-        }
+        if(student[i] >= 0) answer++;
     }
     
+    cout << "\n";
     return answer;
 }
