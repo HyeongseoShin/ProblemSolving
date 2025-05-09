@@ -18,9 +18,9 @@ void GetAns(ll cnt)
     // n - 1 만큼 반복
     for(ll i = 0; i < n - 1; i++)
     {
-        for(ll i = 0; i < m; i++)
+        for(ll j = 0; j < m; j++)
         {
-            auto [s, e, w] = edges[i];
+            auto [s, e, w] = edges[j];
             if(dst[s] != LLONG_MAX && dst[e] > dst[s] + w)
             {
                 dst[e] = dst[s] + w;
