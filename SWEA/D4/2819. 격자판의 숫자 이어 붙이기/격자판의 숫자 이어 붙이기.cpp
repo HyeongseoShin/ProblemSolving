@@ -9,7 +9,7 @@ int dy[4] = {0, 0, -1, 1};
 
 char board[4][4];
 
-set<string> s;
+unordered_set<string> s;
 
 void GetAns(int x, int y, string cur, int cnt)
 {
