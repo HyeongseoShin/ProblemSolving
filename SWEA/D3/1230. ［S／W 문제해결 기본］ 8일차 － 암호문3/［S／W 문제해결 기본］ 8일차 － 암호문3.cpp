@@ -1,3 +1,9 @@
+// https://swexpertacademy.com/main/code/problem/problemDetail.do?problemLevel=3&contestProbId=AV14zIwqAHwCFAYD&categoryId=AV14zIwqAHwCFAYD&categoryType=CODE&problemTitle=&orderBy=RECOMMEND_COUNT&selectCodeLang=ALL&select-1=3&pageSize=10&pageIndex=3
+
+// vector: insert / erase 활용
+
+// 쉬움
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -12,11 +18,11 @@ int main()
         int n;
         cin >> n;
 
-        vector<string> v;
+        vector<int> v;
 
         for(int i = 0; i < n;i++)
         {
-            string s;
+            int s;
             cin >> s;
 
             v.push_back(s);
@@ -36,10 +42,10 @@ int main()
                 int st, cnt;
                 cin >> st >> cnt;
 
-                vector<string> tmp;
+                vector<int> tmp;
                 while(cnt--)
                 {
-                    string s;
+                    int s;
                     cin >> s;
 
                     tmp.push_back(s);
@@ -63,7 +69,7 @@ int main()
 
                 while(cnt--)
                 {
-                    string s;
+                    int s;
                     cin >> s;
 
                     v.push_back(s);
