@@ -30,16 +30,18 @@ int main()
         {
             for(int j = i + 1; j < n; j++)
             {
-                string tmp = to_string(v[i] * v[j]);
+                int tmp = v[i] * v[j];
                 
                 bool isPossible = true;
-                for(int i = 1; i < (int)tmp.length(); i++)
+                while(tmp / 10)
                 {
-                    if(tmp[i-1] > tmp[i])
+                    if((tmp % 10) < ((tmp / 10) % 10))
                     {
                         isPossible = false;
                         break;
                     }
+
+                    tmp /= 10;
                 }
 
                 if(isPossible) ans = max(ans, v[i] * v[j]);
