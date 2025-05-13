@@ -53,11 +53,7 @@ int main()
                 int st, cnt;
                 cin >> st >> cnt;
 
-                while(cnt--)
-                {
-                    v.erase(v.begin() + st);
-                }
-                
+                v.erase(v.begin() + st, v.begin() + st + cnt);                
             }
 
             else if(op == 'A')
