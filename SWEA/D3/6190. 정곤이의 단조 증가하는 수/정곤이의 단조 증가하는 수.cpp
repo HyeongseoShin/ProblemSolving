@@ -26,8 +26,6 @@ int main()
             v.push_back(x);
         }
 
-        // sort(v.begin(), v.end(), greater<>());
-
         for(int i = 0; i < n; i++)
         {
             for(int j = i + 1; j < n; j++)
