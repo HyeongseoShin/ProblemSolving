@@ -9,8 +9,14 @@ int ans = 0;
 
 bool isUsed[9];
 
-int expo[10] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512};
-int fact[10] = {0, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880};
+// int expo[10] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512};
+// int fact[10] = {0, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880};
+
+int fact(int x)
+{
+    if(x == 1) return 1;
+    return x * fact(x - 1);
+}
 
 void GetAns(int cnt, int left, int right)
 {
@@ -25,7 +31,8 @@ void GetAns(int cnt, int left, int right)
     // 한 번에 구하기
     if(sum - left <= left)
     {
-        ans += (expo[n - cnt] * fact[n - cnt]);
+        // ans += (expo[n - cnt] * fact[n - cnt]);
+        ans += pow(2, n - cnt) * fact(n - cnt);
         return;
     }
 
