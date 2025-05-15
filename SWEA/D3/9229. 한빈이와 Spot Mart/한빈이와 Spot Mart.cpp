@@ -1,5 +1,3 @@
-//https://swexpertacademy.com/main/code/problem/problemDetail.do?problemLevel=3&contestProbId=AW8Wj7cqbY0DFAXN&categoryId=AW8Wj7cqbY0DFAXN&categoryType=CODE&problemTitle=&orderBy=RECOMMEND_COUNT&selectCodeLang=ALL&select-1=3&pageSize=10&pageIndex=5
-
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -27,19 +25,18 @@ int main()
 			snacks.push_back(x);
 		}
 
-		sort(snacks.begin(), snacks.end(), greater<>());
+		sort(snacks.begin(), snacks.end());
 
 		int ans = 0;
 
-		for (int i = 0; i < n; i++)
+		for (int l = 0; l < n; l++)
 		{
-			for (int j = i + 1; j < n; j++)
-			{
-				if (snacks[i] + snacks[j] <= m)
-				{
-					ans = max(ans, snacks[i] + snacks[j]);
-				}
-			}
+			int r = n - 1;
+
+			while (snacks[l] + snacks[r] > m && l < r) r--;
+			
+			if (l >= r) continue;
+			ans = max(ans, snacks[l] + snacks[r]);
 		}
 
 		if (ans == 0) ans = -1;
