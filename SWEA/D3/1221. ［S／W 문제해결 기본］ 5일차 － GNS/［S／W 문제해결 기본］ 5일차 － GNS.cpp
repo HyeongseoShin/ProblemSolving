@@ -2,12 +2,6 @@
 
 using namespace std;
 
-unordered_map<string, int> um;
-
-bool cmp(string A, string B)
-{
-	return um[A] < um[B];
-}
 int main()
 {
 	ios::sync_with_stdio(0);
@@ -16,16 +10,7 @@ int main()
 	int testCase;
 	cin >> testCase;
 
-	um["ZRO"] = 0;
-	um["ONE"] = 1;
-	um["TWO"] = 2;
-	um["THR"] = 3;
-	um["FOR"] = 4;
-	um["FIV"] = 5;
-	um["SIX"] = 6;
-	um["SVN"] = 7;
-	um["EGT"] = 8;
-	um["NIN"] = 9;
+	string order[10] = { "ZRO", "ONE", "TWO", "THR", "FOR", "FIV", "SIX", "SVN", "EGT", "NIN" };
 
 	for (int t = 1; t <= testCase; t++)
 	{
@@ -37,21 +22,30 @@ int main()
 
 		vector<string> v;
 
+		int cnt[10];
+		fill(cnt, cnt + 10, 0);
+
 		for (int i = 0; i < n; i++)
 		{
 			string s;
 			cin >> s;
-			v.push_back(s);
+			
+			for (int j = 0; j < 10; j++)
+			{
+				if (s == order[j]) cnt[j]++;
+			}
 		}
-
-		sort(v.begin(), v.end(), cmp);
 
 		cout << op << " ";
-		for (auto word : v)
+		for(int i = 0; i < 10; i++)
 		{
-			cout << word << " ";
+			for (int j = 0; j < cnt[i]; j++)
+			{
+				cout << order[i] << " ";
+			}
 		}
 		cout << "\n";
+
 	}
 	return 0;
 }
