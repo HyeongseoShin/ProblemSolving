@@ -15,33 +15,23 @@ int main()
         int n;
         cin >> n;
 
-        char nums[1001];
+        string s;
 
         for(int i = 0; i < n; i++)
         {
-            cin >> nums[i];
+            char c;
+            cin >> c;
+
+            s += c;
         }
 
         int ans = 0;
+
         while(true)
         {
             string strAns = to_string(ans);
+            if(s.find(to_string(ans)) == string::npos) break;
 
-            bool isPossible = false;
-            for(int i = 0; i <= n - (int)strAns.length(); i++)
-            {
-                int idx = 0;
-
-                while(idx < strAns.length() && nums[i + idx] == strAns[idx]) idx++;
-
-                if(idx == strAns.length())
-                {
-                    isPossible = true;
-                    break;
-                }
-            }
-
-            if(!isPossible) break;
             ans++;
         }
 
