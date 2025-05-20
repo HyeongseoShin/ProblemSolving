@@ -2,6 +2,8 @@
 
 using namespace std;
 
+typedef long long ll;
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -12,14 +14,15 @@ int main()
 
     for(int t = 1; t <= testCase; t++)
     {
-        string s;
-        cin >> s;
+        ll n;
+        cin >> n;
 
         queue<int> q;
 
-        for(auto c : s)
+        while(n > 0)
         {
-            q.push(c - '0');
+            q.push(n % 10);
+            n /= 10;
         }
 
         int ans = 0;
@@ -39,11 +42,10 @@ int main()
                 q.pop();
             }
 
-            string strSum = to_string(sum);
-
-            for(auto c : strSum)
+            while(sum > 0)
             {
-                q.push(c - '0');
+                q.push(sum % 10);
+                sum /= 10;
             }
         }
 
