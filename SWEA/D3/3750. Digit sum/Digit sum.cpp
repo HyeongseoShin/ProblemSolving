@@ -17,39 +17,27 @@ int main()
         ll n;
         cin >> n;
 
-        queue<int> q;
+        int sum = 0;
 
         while(n > 0)
         {
-            q.push(n % 10);
+            sum += (n % 10);
             n /= 10;
         }
 
-        int ans = 0;
-
-        while(true)
+        while((sum / 10) > 0)
         {
-            if(q.size() == 1)
-            {
-                ans = q.front();
-                break;
-            }
+            int tmp = sum;
 
-            int sum = 0;
-            while(!q.empty())
+            sum = 0;
+            while(tmp > 0)
             {
-                sum += q.front();
-                q.pop();
-            }
-
-            while(sum > 0)
-            {
-                q.push(sum % 10);
-                sum /= 10;
+                sum += (tmp % 10);
+                tmp /= 10;
             }
         }
 
-        cout << "#" << t << " " << ans << "\n";
+        cout << "#" << t << " " << sum << "\n";
     }
     return 0;
 }
