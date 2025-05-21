@@ -12,7 +12,7 @@ int main()
 
     for(int t = 1; t <= testCase; t++)
     {
-        int board[8][8];
+        char board[8][8];
 
         int cnt = 0;
         for(int i = 0; i < 8; i++)
