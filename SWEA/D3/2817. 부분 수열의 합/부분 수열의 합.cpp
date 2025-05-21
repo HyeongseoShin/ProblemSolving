@@ -9,20 +9,24 @@ int ans = 0;
 
 void GetAns(int idx, int cur)
 {
-    if(cur == k)
+    if(idx == n)
     {
-        ans++;
+        if(cur == k) ans++;
+        
         return;
     }
 
-    for(int i = idx; i < n; i++)
-    {
-        if(isUsed[i]) continue;
-        
-        isUsed[i] = true;
-        GetAns(i + 1, cur + board[i]);
-        isUsed[i] = false;
-    }
+    // for(int i = idx; i < n; i++)
+    // {
+    //     if(isUsed[i]) continue;
+
+    //     isUsed[i] = true;
+    //     GetAns(i + 1, cur + board[i]);
+    //     isUsed[i] = false;
+    // }
+
+    GetAns(idx + 1, cur + board[idx]);
+    GetAns(idx + 1, cur);
 
 
 }
