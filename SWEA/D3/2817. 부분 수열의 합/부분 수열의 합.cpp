@@ -4,29 +4,20 @@ using namespace std;
 
 int n, k;
 int board[20];
-bool isUsed[20];
 int ans = 0;
 
 void GetAns(int idx, int cur)
 {
-    if(idx == n)
+    if(cur == k)
     {
-        if(cur == k) ans++;
-        
+        ans++;
         return;
     }
 
-    // for(int i = idx; i < n; i++)
-    // {
-    //     if(isUsed[i]) continue;
-
-    //     isUsed[i] = true;
-    //     GetAns(i + 1, cur + board[i]);
-    //     isUsed[i] = false;
-    // }
-
-    GetAns(idx + 1, cur + board[idx]);
-    GetAns(idx + 1, cur);
+    for(int i = idx + 1; i < n; i++)
+    {
+        if(cur + board[i] <= k) GetAns(i, cur + board[i]);
+    }
 
 
 }
@@ -49,8 +40,12 @@ int main()
         }
 
         ans = 0;
-        fill(isUsed, isUsed + 20, false);
-        GetAns(0, 0);
+        
+        for(int i = 0; i < n; i++)
+        {
+            GetAns(i, board[i]);
+        }
+        
 
         cout << "#" << t << " " << ans << "\n";
     }
