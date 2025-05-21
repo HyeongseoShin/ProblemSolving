@@ -14,30 +14,32 @@ int main()
 
         cin >> n >> s;
 
-        for(int i = 0; i < n - 1; i++)
+        stack<char> stk;
+
+        for(int i = 0; i < n; i++)
         {
-            if(s[i] == ' ') continue;
-            if(s[i] != s[i+1]) continue;
-
-            int st = i;
-            int en = i + 1;
-
-            while(st >= 0 && en < n && s[st] == s[en])
+            bool isPossible = true;
+            while(!stk.empty() && stk.top() == s[i])
             {
-                s[st] = ' ';
-                s[en] = ' ';
-
-                while(st > 0 && s[st] == ' ') st--;
-                while(en < n - 1 && s[en] == ' ') en++;
+                isPossible = false;
+                stk.pop();
             }
+            
+            if(isPossible) stk.push(s[i]);
         }
 
         string ans = "";
-        for(int i = 0; i < n; i++)
+
+        while(!stk.empty())
         {
-            if(s[i] != ' ') ans += s[i];
+            ans += stk.top();
+            stk.pop();
         }
+
+        reverse(ans.begin(), ans.end());
+
         cout << "#" << t << " " << ans << "\n";
     }
+
     return 0;
 }
