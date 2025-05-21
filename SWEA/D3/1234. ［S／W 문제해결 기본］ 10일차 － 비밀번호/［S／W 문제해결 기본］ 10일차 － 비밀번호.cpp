@@ -27,11 +27,8 @@ int main()
                 s[st] = ' ';
                 s[en] = ' ';
 
-                st--;
-                en++;
-                
                 while(st > 0 && s[st] == ' ') st--;
-                while(en > 0 && s[en] == ' ') en++;
+                while(en < n - 1 && s[en] == ' ') en++;
             }
         }
 
