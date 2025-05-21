@@ -17,11 +17,15 @@ int main()
         ll n;
         cin >> n;
 
-        ll ans = n - 1;
+        ll ans = 0;
 
-        for(ll i = 2; i <= sqrt(n); i++)
+        for(ll i = sqrt(n); i >= 1; i--)
         {
-            if(n % i == 0) ans = min(ans, i + (n / i) - 2);
+            if(n % i == 0)
+            {
+                ans = i + (n / i) - 2;
+                break;
+            }
         }
 
         cout << "#" << t << " " << ans << "\n";
