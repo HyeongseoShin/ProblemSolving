@@ -19,7 +19,7 @@ int main()
 
         ll ans = n - 1;
 
-        for(ll i = 1; i <= sqrt(n); i++)
+        for(ll i = 2; i <= sqrt(n); i++)
         {
             if(n % i == 0) ans = min(ans, i + (n / i) - 2);
         }
