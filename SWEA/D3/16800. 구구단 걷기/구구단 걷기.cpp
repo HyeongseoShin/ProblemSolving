@@ -17,13 +17,12 @@ int main()
         ll n;
         cin >> n;
 
-        ll pos = 0;
+        ll ans = n - 1;
+
         for(ll i = 1; i <= sqrt(n); i++)
         {
-            if(n % i == 0) pos = i;
+            if(n % i == 0) ans = min(ans, i + (n / i) - 2);
         }
-
-        ll ans = pos + (n / pos) - 2;
 
         cout << "#" << t << " " << ans << "\n";
     }
