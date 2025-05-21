@@ -5,8 +5,7 @@ using namespace std;
 int n;
 int ans = 0;
 
-// 행, 열에 퀸 있는지 확인
-bool row[11];
+// 열에 퀸 있는지 확인
 bool col[11];
 
 // 왼쪽 대각선, 오른쪽 대각선에 퀸 있는지 확인
@@ -27,14 +26,12 @@ void GetAns(int idx, int cnt)
         if(ld[idx + i]) continue;
         if(rd[n - (i - idx)]) continue;
 
-        row[idx] = true;
         col[i] = true;
         ld[idx + i] = true;
         rd[n - (i - idx)] = true;
 
         GetAns(idx + 1, cnt + 1);
 
-        row[idx] = false;
         col[i] = false;
         ld[idx + i] = false;
         rd[n - (i - idx)] = false;
