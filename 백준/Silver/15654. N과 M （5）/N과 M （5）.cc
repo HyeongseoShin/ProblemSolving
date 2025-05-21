@@ -6,8 +6,9 @@ int n, m;
 
 vector<int> v;
 bool isUsed[8];
+vector<int> tmp;
 
-void GetAns(vector<int> tmp)
+void GetAns()
 {
     if(tmp.size() == m)
     {
@@ -24,7 +25,7 @@ void GetAns(vector<int> tmp)
         if(isUsed[i]) continue;
         isUsed[i] = true;
         tmp.push_back(v[i]);
-        GetAns(tmp);
+        GetAns();
         tmp.pop_back();
         isUsed[i] = false;
     }
@@ -46,9 +47,7 @@ int main()
 
     sort(v.begin(), v.end());
 
-    fill(isUsed, isUsed + 8, false);
-
-    vector<int> tmp;
-    GetAns(tmp);
+    tmp.clear();
+    GetAns();
     return 0;
 }
