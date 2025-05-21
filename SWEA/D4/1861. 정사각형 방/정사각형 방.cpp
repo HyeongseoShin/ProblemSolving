@@ -2,40 +2,51 @@
 
 using namespace std;
 
-int n;
 int board[1001][1001];
-
-int ans = 0;
-int ansNum = 10000001;
+int n;
 
 int dx[4] = {-1, 1, 0, 0};
 int dy[4] = {0, 0, -1, 1};
 
-void DFS(int x, int y, int cur, int dist)
+int maxCnt = 0;
+int minNum = INT_MAX;
+
+void BFS(int x, int y)
 {
-    for(int i = 0; i < 4; i++)
+    queue<pair<int, int>> q;
+
+    q.push({x, y});
+
+    int cnt = 0;
+
+    while(!q.empty())
     {
-        int nX = x + dx[i];
-        int nY = y + dy[i];
+        auto [curX, curY] = q.front();
+        q.pop();
 
-        if(nX < 0 || nX >= n || nY < 0 || nY >= n) continue;
-        if(board[x][y] != board[nX][nY] - 1) continue;
-
-        if(ans < dist + 1)
+        for(int i = 0; i < 4; i++)
         {
-            ans = dist + 1;
-            ansNum = cur;
-        }
+            int nX = curX + dx[i];
+            int nY = curY + dy[i];
 
-        else if(ans == dist + 1)
-        {
-            ansNum = min(ansNum, cur);
+            if(board[nX][nY] - board[curX][curY] != 1) continue;
+            cnt++;
+            q.push({nX, nY});
         }
-        
-        DFS(nX, nY, cur, dist + 1);
-        
+    }
+
+    if(maxCnt < cnt)
+    {
+        maxCnt = cnt;
+        minNum = board[x][y];
+    }
+
+    else if(maxCnt == cnt)
+    {
+        minNum = min(minNum, board[x][y]);
     }
 }
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -56,19 +67,19 @@ int main()
             }
         }
 
-        ans = 0;
-        ansNum = 10000001;
+        maxCnt = 0;
+        minNum = INT_MAX;
 
         for(int i = 0; i < n; i++)
         {
             for(int j = 0; j < n; j++)
             {
-                DFS(i, j, board[i][j], 1);
+                BFS(i, j);
             }
         }
 
-        cout << "#" << t << " " << ansNum << " " << ans << "\n";
-
+        cout << "#" << t << " " << minNum << " " << maxCnt + 1 << "\n";
     }
+
     return 0;
 }
