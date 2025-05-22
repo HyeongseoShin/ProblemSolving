@@ -17,18 +17,13 @@ int main()
         ll k;
         cin >> k;
 
-        // 0 - indexed
         k--;
-        
-        int ans = 0;
-        
-        while(k % 2 == 1) k = (k-1) / 2;
 
-        if(k % 4 == 0) ans = 0;
-        else if(k % 2 == 0) ans = 1;
+        while(k % 2 == 1) k /= 2;
 
-        cout << "#" << t << " " << ans << "\n";
+        cout << "#" << t << " ";
+        if(k % 4 == 0) cout << "0\n";
+        else if(k % 2 == 0) cout << "1\n";
     }
-
     return 0;
 }
