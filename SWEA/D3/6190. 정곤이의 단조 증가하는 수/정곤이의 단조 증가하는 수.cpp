@@ -2,6 +2,24 @@
 
 using namespace std;
 
+typedef long long ll;
+
+bool isIncreasing(ll target)
+{
+    ll prev = target % 10;
+    target /= 10;
+
+    while(target > 0)
+    {
+        if(prev < target % 10) return false;
+
+        prev = target % 10;
+        target /= 10;
+    }
+
+    return true;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -15,39 +33,31 @@ int main()
         int n;
         cin >> n;
 
-        vector<int> v;
+        int nums[1001];
 
-        int ans = -1;
         for(int i = 0; i < n; i++)
         {
-            int x;
-            cin >> x;
-
-            v.push_back(x);
+            cin >> nums[i];
         }
 
-        for(int i = 0; i < n; i++)
+        ll ans = 0;
+
+        for(int i = 0; i < n - 1; i++)
         {
             for(int j = i + 1; j < n; j++)
             {
-                int tmp = v[i] * v[j];
-                
-                bool isPossible = true;
-                while(tmp / 10)
-                {
-                    if((tmp % 10) < ((tmp / 10) % 10))
-                    {
-                        isPossible = false;
-                        break;
-                    }
+                ll tmp = nums[i] * nums[j];
 
-                    tmp /= 10;
-                }
-
-                if(isPossible) ans = max(ans, v[i] * v[j]);
+                if(isIncreasing(tmp)) ans = max(ans, tmp);
             }
         }
 
-        cout << "#" << t << " " << ans << "\n";
+        cout << "#" << t << " ";
+
+        if(ans == 0) ans = -1;
+
+        cout << ans << "\n";
     }
+
+    return 0;
 }
