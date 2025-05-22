@@ -2,36 +2,33 @@
 
 using namespace std;
 
-int weights[9];
+int choo[9];
+
 int sum = 0;
-int n;
-int ans = 0;
 
 bool isUsed[9];
 
-// int expo[10] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512};
-// int fact[10] = {0, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880};
+int n;
+
+int ans = 0;
 
 int fact(int x)
 {
     if(x == 1) return 1;
-    return x * fact(x - 1);
+    return x * fact(x-1);
 }
-
-void GetAns(int cnt, int left, int right)
+void GetAns(int l, int r, int cnt)
 {
+    // 모든 추를 다 썼을 때
     if(cnt == n)
     {
         ans++;
         return;
     }
 
-    // 시간 초과 제거
-    // 남은 추를 어떻게 올려도 상관 없으면 (남은 추가 현재 left보다 작으면)
-    // 한 번에 구하기
-    if(sum - left <= left)
+    // 남아 있는 추를 모두 오른쪽에 놓아도 성립할 때 (r + (sum - l - r)) => sum - l
+    if(l >= sum - l)
     {
-        // ans += (expo[n - cnt] * fact[n - cnt]);
         ans += pow(2, n - cnt) * fact(n - cnt);
         return;
     }
@@ -41,11 +38,15 @@ void GetAns(int cnt, int left, int right)
         if(isUsed[i]) continue;
 
         isUsed[i] = true;
-        GetAns(cnt + 1, left + weights[i], right);
-        if(left >= right + weights[i]) GetAns(cnt + 1, left, right + weights[i]);
+
+        // 오른쪽에 추 놓을 수 있을 때
+        if(l >= r + choo[i]) GetAns(l, r + choo[i], cnt + 1);
+
+        // 왼쪽은 무조건 놓을 수 있음
+        GetAns(l + choo[i], r, cnt + 1);
+
         isUsed[i] = false;
     }
-    
 }
 
 int main()
@@ -63,16 +64,15 @@ int main()
         sum = 0;
         for(int i = 0; i < n; i++)
         {
-            cin >> weights[i];
-            sum += weights[i];
+            cin >> choo[i];
+            sum += choo[i];
         }
 
         ans = 0;
-        fill(isUsed, isUsed + n, false);
         GetAns(0, 0, 0);
 
         cout << "#" << t << " " << ans << "\n";
-        
+
     }
     return 0;
 }
