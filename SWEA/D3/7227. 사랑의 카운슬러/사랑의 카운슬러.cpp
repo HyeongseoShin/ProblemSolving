@@ -13,12 +13,9 @@ bool isUsed[21];
 
 ll ans = LLONG_MAX;
 
-ll GetDist(ll x1, ll y1, ll x2, ll y2)
-{
-    return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-}
 
-void GetAns(int idx, ll curX, ll curY, int cnt)
+
+void GetAns(int idx, int cnt)
 {
     if(cnt == n / 2)
     {
@@ -27,14 +24,20 @@ void GetAns(int idx, ll curX, ll curY, int cnt)
 
         for(int i = 0; i < n; i++)
         {
-            if(isUsed[i]) continue;
+            if(isUsed[i])
+            {
+                tmpX += x[i];
+                tmpY += y[i];
+            }
+            else
+            {
+                tmpX -= x[i];
+                tmpY -= y[i];
+            }
 
-            tmpX += x[i];
-            tmpY += y[i];
         }
 
-        // cout << "curX: " << curX << " curY: " << curY << " tmpX: " << tmpX << " tmpY: " << tmpY << "\n";
-        ans = min(ans, GetDist(curX, curY, tmpX, tmpY));
+        ans = min(ans, tmpX * tmpX + tmpY * tmpY);
         return;
     }
 
@@ -43,7 +46,7 @@ void GetAns(int idx, ll curX, ll curY, int cnt)
         if(isUsed[i]) continue;
 
         isUsed[i] = true;
-        GetAns(i + 1, curX + x[i], curY + y[i], cnt + 1);
+        GetAns(i + 1, cnt + 1);
         isUsed[i] = false;
     }
 }
@@ -65,7 +68,7 @@ int main()
         }
 
         ans = LLONG_MAX;
-        GetAns(0, 0, 0, 0);
+        GetAns(0, 0);
 
         cout << "#" << t << " " << ans << "\n";
     }
