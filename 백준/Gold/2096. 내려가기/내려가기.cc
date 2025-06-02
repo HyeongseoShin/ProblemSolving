@@ -8,6 +8,8 @@ int maxDp[3]; // 현재 행, 칸에서 만들 수 있는 최대값
 
 int minDp[3]; // 현재 행, 칸에서 만들 수 있는 최소값
 
+int board[3];
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -15,68 +17,34 @@ int main()
 
     cin >> n;
 
-    for(int i = 0; i < n; i++)
+    cin >> maxDp[0] >> maxDp[1] >> maxDp[2];
+
+    minDp[0] = maxDp[0];
+    minDp[1] = maxDp[1];
+    minDp[2] = maxDp[2];
+
+    for(int i = 1; i < n; i++)
     {
-        int board[3];
         cin >> board[0] >> board[1] >> board[2];
 
-        if(i == 0)
-        {
-           for(int j = 0; j < 3; j++)
-           {
-                maxDp[j] = board[j];
-                minDp[j] = board[j];
-           }
-        }
+        int temp0, temp2;
+        temp0 = maxDp[0];
+        temp2 = maxDp[2];
 
-        else
-        {
-            int maxTmp[3];
-            fill(maxTmp, maxTmp + 3, 0);
+        maxDp[0] = max(maxDp[0], maxDp[1]) + board[0];
+        maxDp[2] = max(maxDp[2], maxDp[1]) + board[2];
+        maxDp[1] = max({temp0, maxDp[1], temp2}) + board[1];
 
-            int minTmp[3];
-            fill(minTmp, minTmp + 3, 0);
+        temp0 = minDp[0];
+        temp2 = minDp[2];
 
-            for(int j = 0; j < 3; j++)
-            {
-                int minVal = INT_MAX;
-                int maxVal = 0;
-
-                if(j <= 1)
-                {
-                    minVal = min(minVal, board[j] + minDp[0]);
-                    maxVal = max(maxVal, board[j] + maxDp[0]);
-                }
-
-                minVal = min(minVal, board[j] + minDp[1]);
-                maxVal = max(maxVal, board[j] + maxDp[1]);
-
-                if(j >= 1)
-                {
-                    minVal = min(minVal, board[j] + minDp[2]);
-                    maxVal = max(maxVal, board[j] + maxDp[2]);
-                }
-
-                minTmp[j] = minVal;
-                maxTmp[j] = maxVal;
-            }
-
-            for(int j = 0; j < 3; j++)
-            {
-                minDp[j] = minTmp[j];
-                maxDp[j] = maxTmp[j];
-            }
-        }
+        minDp[0] = min(minDp[0], minDp[1]) + board[0];
+        minDp[2] = min(minDp[2], minDp[1]) + board[2];
+        minDp[1] = min({temp0, minDp[1], temp2}) + board[1];
     }
 
-    int minAns = INT_MAX;
-    int maxAns = 0;
-
-    for(int j = 0; j < 3; j++)
-    {
-        minAns = min(minAns, minDp[j]);
-        maxAns = max(maxAns, maxDp[j]);
-    }
+    int minAns = min({minDp[0], minDp[1], minDp[2]});
+    int maxAns = max({maxDp[0], maxDp[1], maxDp[2]});
 
     cout << maxAns << " " << minAns << "\n";
     
