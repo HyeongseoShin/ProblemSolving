@@ -79,5 +79,4 @@ int main()
     else cout << min(ansPos1, ansPos2) << "\n";
 
     return 0;
-
 }
