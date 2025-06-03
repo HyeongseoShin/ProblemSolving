@@ -8,12 +8,14 @@ vector<pair<int, int>> adj[10001];
 
 int ans = 0;
 
+int dist[100001];
+
 void BFS(int x)
 {
     queue<int> q;
     q.push(x);
 
-    int dist[100001];
+    
     fill(dist, dist + n + 1, -1);
     dist[x] = 0;
 
@@ -30,12 +32,6 @@ void BFS(int x)
             q.push(nxtV);
         }
     }
-
-    for(int i = 1; i <= n; i++)
-    {
-        ans = max(ans, dist[i]);
-    }    
-    
 }
 int main()
 {
@@ -53,9 +49,19 @@ int main()
         adj[v].push_back({w, u});
     }
 
+    BFS(1);
+
+    int maxIdx = 1;
     for(int i = 1; i <= n; i++)
     {
-        BFS(i);
+        if(dist[maxIdx] < dist[i]) maxIdx = i;
+    }
+    
+    BFS(maxIdx);
+
+    for(int i = 1; i <= n; i++)
+    {
+        ans = max(ans, dist[i]);
     }
 
     cout << ans << "\n";
