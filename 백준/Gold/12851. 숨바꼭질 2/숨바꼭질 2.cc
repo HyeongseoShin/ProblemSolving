@@ -3,58 +3,40 @@
 using namespace std;
 
 #define MAX 100001
-int pos[MAX];
+int dist[MAX];
+int cnt[MAX];
 
 int n, k;
-int cnt = 0;
 
 void BFS(int x)
 {
     queue<int> q;
     q.push(x);
 
-    pos[x] = 0;
+    dist[x] = 0;
+    cnt[x] = 1;
 
     while(!q.empty())
     {
         int cur = q.front();
         q.pop();
 
-        int nxt = cur-1;
-        if(nxt >= 0 && pos[nxt] > pos[cur] + 1)
+        for(int nxt : {cur+1, cur-1, cur*2})
         {
-            pos[nxt] = pos[cur] + 1;
-            q.push(nxt);
-        }
+            if(nxt < 0 || nxt > 100000) continue;
 
-        nxt = cur+1;
-        if(nxt <= 100001 && pos[nxt] > pos[cur] + 1)
-        {
-            pos[nxt] = pos[cur] + 1;
-            q.push(nxt);
-        }
+            if(dist[nxt] == -1)
+            {
+                dist[nxt] = dist[cur] + 1;
+                cnt[nxt] += cnt[cur];
+                q.push(nxt);
+            }
 
-        nxt = cur*2;
-        if(nxt <= 100001 && pos[nxt] > pos[cur] + 1)
-        {
-            pos[nxt] = pos[cur] + 1;
-            q.push(nxt);
+            else if(dist[nxt] == dist[cur] + 1) cnt[nxt] += cnt[cur];
         }
     }
 }
 
-void DFS(int x)
-{
-    if(x == n)
-    {
-        cnt++;
-        return;
-    }
-
-    if(x - 1 >= 0 && pos[x-1] == pos[x] - 1) DFS(x-1);
-    if(x + 1 <= 100001 && pos[x+1] == pos[x] - 1) DFS(x+1);
-    if(x % 2 == 0 && x / 2 >= 0 && pos[x/2] == pos[x] - 1) DFS(x/2);
-}
 
 int main()
 {
@@ -63,15 +45,12 @@ int main()
 
     cin >> n >> k;
 
-    fill(pos, pos + MAX, INT_MAX);
+    fill(dist, dist + MAX, -1);
 
     BFS(n);
 
-    cout << pos[k] << "\n";
-
-    DFS(k);
-
-    cout << cnt << "\n";
+    cout << dist[k] << "\n";
+    cout << cnt[k] << "\n";
 
     return 0;
 }
