@@ -7,51 +7,10 @@ int board[9][9];
 vector<pair<int, int>> pos;
 
 bool isPossible = false;
-bool CheckHorizontal(int x, int y)
-{
-    for(int i = 0; i < 9; i++)
-    {
-        if(i == y) continue;
-        if(board[x][i] == board[x][y]) return false;
-    }
 
-    return true;
-}
-
-bool CheckVertical(int x, int y)
-{
-    for(int i = 0; i < 9; i++)
-    {
-        if(i == x) continue;
-        if(board[i][y] == board[x][y]) return false;
-    }
-    
-    return true;
-}
-
-bool Check3x3(int x, int y)
-{
-    int stX, stY;
-    if(x < 3) stX = 0;
-    else if(x < 6) stX = 3;
-    else if(x < 9) stX = 6;
-
-    if(y < 3) stY = 0;
-    else if(y < 6) stY = 3;
-    else if(y < 9) stY = 6;
-
-    for(int i = stX; i < stX + 3; i++)
-    {
-        for(int j = stY; j < stY + 3; j++)
-        {
-            if(i == x && j == y) continue;
-
-            if(board[i][j] == board[x][y]) return false;
-        }
-    }
-
-    return true;
-}
+bool checkRow[9][10]; // checkRow[i][j] : i번째 행에 j가 있으면 true
+bool checkCol[9][10]; // checkCol[i][j] : i번째 열에 j가 있으면 true
+bool checkBox[9][10]; // checkCol[i][j] : i번째 3x3구간에 j가 있으면 true
 
 void Solve(int cnt)
 {
@@ -63,37 +22,36 @@ void Solve(int cnt)
         return;
     }
 
-    int tmp[9][9];
+    // int tmp[9][9];
 
     auto [curX, curY] = pos[cnt];
 
     for(int num = 1; num <= 9; num++)
     {
         // 원본 복사
-        for(int i = 0; i < 9; i++)
-        {
-            for(int j = 0; j < 9; j++)
-            {
-                tmp[i][j] = board[i][j];
-            }
-        }
+        // for(int i = 0; i < 9; i++)
+        // {
+        //     for(int j = 0; j < 9; j++)
+        //     {
+        //         tmp[i][j] = board[i][j];
+        //     }
+        // }
 
-        board[curX][curY] = num;
-        if(CheckHorizontal(curX, curY) && CheckVertical(curX, curY) && Check3x3(curX, curY))
+        if(!checkRow[curX][num] && !checkCol[curY][num] && !checkBox[(curX / 3) * 3 + (curY / 3)][num])
         {
+            board[curX][curY] = num;
+            checkRow[curX][num] = true;
+            checkCol[curY][num] = true;
+            checkBox[(curX / 3) * 3 + (curY / 3)][num] = true;
+
             Solve(cnt + 1);
-        }
-        else board[curX][curY] = 0;
 
-        if(isPossible) return;
+            if(isPossible) return;
 
-        // 복구
-        for(int i = 0; i < 9; i++)
-        {
-            for(int j = 0; j < 9; j++)
-            {
-                board[i][j] = tmp[i][j];
-            }
+            board[curX][curY] = 0;
+            checkRow[curX][num] = false;
+            checkCol[curY][num] = false;
+            checkBox[(curX / 3) * 3 + (curY / 3)][num] = false;
         }
     }
 }
@@ -110,6 +68,9 @@ int main()
         for(int j = 0; j < 9; j++)
         {
             board[i][j] = s[j] - '0';
+            checkRow[i][board[i][j]] = true;
+            checkCol[j][board[i][j]] = true;
+            checkBox[(i/3) * 3 + (j/3)][board[i][j]] = true;
 
             if(board[i][j] == 0) pos.push_back({i, j});
         }
