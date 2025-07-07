@@ -10,37 +10,29 @@ int board[1001][1001];
 int dx[4] = {-1, 1, 0, 0};
 int dy[4] = {0, 0, -1, 1};
 
-int parent[1000001];
+// 0: 방문 전, 1: 방문 중, 2: 방문 완료
+int vis[1001][1001];
 
 int ans = 0;
 
-int Find(int v)
-{
-    if(parent[v] == v) return parent[v];
-    else return parent[v] = Find(parent[v]);
-}
-
-void Union(int v1, int v2)
-{
-    v1 = Find(v1);
-    v2 = Find(v2);
-
-    if(v1 < v2) parent[v2] = v1;
-    else parent[v1] = v2;
-}
-
 void DFS(int x, int y)
 {
+    vis[x][y] = 1;
+
     int dir = board[x][y];
 
     int nX = x + dx[dir];
     int nY = y + dy[dir];
 
-    if(Find(x * m + y) != Find(nX * m + nY))
-    {
-        Union(x * m + y, nX * m + nY);
-        DFS(nX, nY);
-    }
+    if(vis[nX][nY] == 0) DFS(nX, nY);
+
+    // 사이클 발생 => 이 구간에 SAFE ZONE 하나 설치해야함
+    else if(vis[nX][nY] == 1) ans++;
+
+    // 현재 칸 방문 완료
+    vis[x][y] = 2;
+
+    
 }
 int main()
 {
@@ -63,8 +55,6 @@ int main()
             else if(s[j] == 'R') dir = 3;
 
             board[i][j] = dir;
-
-            parent[i * m + j] = i * m + j;
         }
     }
 
@@ -72,20 +62,11 @@ int main()
     {
         for(int j = 0; j < m; j++)
         {
-            DFS(i, j);
+            if(vis[i][j] == 0) DFS(i, j);
         }
     }
 
-    set<int> ans;
-    for(int i = 0; i < n; i++)
-    {
-        for(int j = 0; j < m; j++)
-        {
-            ans.insert(Find(i * m + j));
-        }
-    }
-
-    cout << (int) ans.size() << "\n";
+    cout << ans << "\n";
 
     return 0;
 }
