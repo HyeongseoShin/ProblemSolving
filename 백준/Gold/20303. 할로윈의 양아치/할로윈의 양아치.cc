@@ -52,6 +52,8 @@ int main()
 
     cin >> n >> m >> k;
 
+    k = min(k, 3000);
+
     for(int i = 1; i <= n; i++) cin >> candy[i];
     
     for(int i = 0; i < m; i++)
@@ -63,28 +65,17 @@ int main()
         adj[v].push_back(u);
     }
 
-
-    // 1-indexed 처리 위해 하나 미리 넣어줌
-    // amount.push_back({0, 0});
-
     // 뺏을 수 있는 사탕, 사람 수 구하기
     for(int i = 1; i <= n; i++)
     {
         if(!vis[i]) BFS(i);
     }
 
-    
 
+    // DP 진행 (냅색)
     int amountLen = (int)amount.size();
     auto [c, p] = amount[0];
     dp[0][p] = c;
-
-    // for(int i = 0; i < amountLen; i++)
-    // {
-    //     auto [c, p] = amount[i];
-
-    //     cout << "c: " << c << " p: " << p << "\n";
-    // }
 
     for(int i = 1; i < amountLen; i++)
     {
@@ -98,22 +89,17 @@ int main()
             }
 
             else dp[i][j] = dp[i-1][j];
-
-            // cout << "dp[" << i << "][" << j << "] : " << dp[i][j] << "\n";
         }
     }
 
     int ans = 0;
 
-    // cout << "amountLen: " << amountLen << "\n";
     for(int i = 0; i < k; i++)
     {
         if(ans < dp[amountLen - 1][i])
         {
             ans = max(ans, dp[amountLen - 1][i]);
-            // cout << "i: " << i << "\n";
         }
-        
     }
 
     cout << ans << "\n";
