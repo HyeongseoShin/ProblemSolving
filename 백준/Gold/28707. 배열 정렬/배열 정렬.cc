@@ -1,81 +1,62 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int n, m;
-
-vector<int> A;
-
+string A;
 vector<tuple<int, int, int>> edges;
+unordered_map<string, int> dist;
 
-// <배열 상태, 비용 합> : 해당 배열 상태가 되기 위한 최소 비용 저장
-map<vector<int>, int> dist;
-
-// 다익스트라로 해당 배열 상태가 되기 위한 최소 비용합 구하기
-void Dijkstra()
-{
-    // pq : <비용, 배열상태>
-    priority_queue<pair<int, vector<int>>, vector<pair<int, vector<int>>>, greater<>> pq;
+void Dijkstra() {
+    priority_queue<pair<int, string>, vector<pair<int, string>>, greater<>> pq;
 
     dist[A] = 0;
+    pq.push({0, A});
 
-    pq.push({dist[A], A});
+    while (!pq.empty()) {
+        auto [curCost, curStr] = pq.top(); pq.pop();
 
-    while(!pq.empty())
-    {
-        auto [curC, curA] = pq.top();
-        pq.pop();
+        if (dist[curStr] < curCost) continue;
 
-        for(auto [l, r, c] : edges)
-        {
-            vector<int> tmpA = curA;
-            swap(tmpA[l], tmpA[r]);
+        for (auto [l, r, c] : edges) {
+            string nextStr = curStr;
+            swap(nextStr[l], nextStr[r]);
 
-            if(dist.count(tmpA) == 0 || dist[tmpA] > curC + c)
-            {
-                dist[tmpA] = curC + c;
-                pq.push({dist[tmpA], tmpA});
+            if (!dist.count(nextStr) || dist[nextStr] > curCost + c) {
+                dist[nextStr] = curCost + c;
+                pq.push({dist[nextStr], nextStr});
             }
         }
     }
 }
 
-int main()
-{
+int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
     cin >> n;
 
-    for(int i = 0; i < n; i++)
-    {
-        int x;
-        cin >> x;
-
-        A.push_back(x);
+    vector<int> input(n);
+    for (int i = 0; i < n; i++) {
+        cin >> input[i];
+        A += (char)(input[i] + '0'); // 숫자를 문자로 저장 (0~9)
     }
 
     cin >> m;
-
-    for(int i = 0; i < m; i++)
-    {
+    for (int i = 0; i < m; i++) {
         int l, r, c;
-
         cin >> l >> r >> c;
-
         edges.push_back({l - 1, r - 1, c});
     }
 
     Dijkstra();
 
-    sort(A.begin(), A.end());
+    // 목표 상태: 정렬된 A
+    sort(input.begin(), input.end());
+    string goal;
+    for (int v : input) goal += (char)(v + '0');
 
-    int ans = 0;
-    if(dist.count(A) == 0) ans = -1;
-    else ans = dist[A];
-
-    cout << ans << "\n";
-
+    if (dist.count(goal)) cout << dist[goal] << "\n";
+    else cout << "-1\n";
 
     return 0;
 }
