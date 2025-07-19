@@ -8,7 +8,7 @@ int n, m, l;
 vector<int> v; // 휴게소 설치 위치
 
 // 현재 휴게소 없는 최대 길이가 X 일때 휴게소 M개 지을 수 있는가?
-int16_t GetRestCnt(int len)
+int GetRestCnt(int len)
 {
     int rest = 0;
 
