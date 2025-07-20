@@ -13,18 +13,21 @@ int dp[MAX][2];
 
 bool vis[MAX];
 
-void DFS(int prev, int cur)
+void DFS(int cur)
 {
     vis[cur] = true;
+    dp[cur][0] = 0;
+    dp[cur][1] = 1;
 
     for(auto nxt : adj[cur])
     {
-        if(!vis[nxt]) DFS(cur, nxt);
+        if(!vis[nxt])
+        {
+            DFS(nxt);
+            dp[cur][0] += dp[nxt][1];
+            dp[cur][1] += min(dp[nxt][0], dp[nxt][1]);
+        }
     }
-
-    dp[cur][1]++;
-    dp[prev][0] += dp[cur][1];
-    dp[prev][1] += min(dp[cur][0], dp[cur][1]);
 }
 
 int main()
@@ -43,7 +46,7 @@ int main()
         adj[v].push_back(u);
     }
 
-    DFS(0, 1);
+    DFS(1);
 
     cout << min(dp[1][0], dp[1][1]) << "\n";
 
