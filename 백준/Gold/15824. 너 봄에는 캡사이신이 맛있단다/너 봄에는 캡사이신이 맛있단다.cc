@@ -12,7 +12,7 @@ vector<int> v;
 
 ll ans = 0;
 
-ll pow2[3001];
+ll pow2[300001];
 
 
 int main()
