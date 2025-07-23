@@ -1,109 +1,79 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
 #define MAX 100001
 int n, m;
-
 int nums[MAX];
 
 int k;
-int treeSize;
-
+int leafStart;
 vector<int> maxSegTree;
 vector<int> minSegTree;
 
-// 트리 초기화
-void SetMaxSegTree(int idx)
-{
-    while(idx != 1)
-    {
-        maxSegTree[idx/2] = max(maxSegTree[idx/2], maxSegTree[idx]);
-        idx--;
+void BuildSegmentTrees() {
+    // 세그먼트 트리 하단에 값 삽입
+    for(int i = 1; i <= n; i++) {
+        maxSegTree[leafStart + i] = nums[i];
+        minSegTree[leafStart + i] = nums[i];
+    }
+
+    // bottom-up 방식으로 내부 노드 채우기
+    for(int i = leafStart - 1; i > 0; i--) {
+        maxSegTree[i] = max(maxSegTree[i * 2], maxSegTree[i * 2 + 1]);
+        minSegTree[i] = min(minSegTree[i * 2], minSegTree[i * 2 + 1]);
     }
 }
 
-// 트리 초기화
-void SetMinSegTree(int idx)
-{
-    while(idx != 1)
-    {
-        minSegTree[idx/2] = min(minSegTree[idx/2], minSegTree[idx]);
-        idx--;
-    }
-}
-
-// 구간 중 최댓값 찾기
-int GetMaxVal(int a, int b)
-{
+int GetMaxVal(int a, int b) {
     int ret = 0;
+    int st = leafStart + a;
+    int en = leafStart + b;
 
-    int st = treeSize / 2 - 1 + a;
-    int en = treeSize / 2 - 1 + b;
-
-    while(st <= en)
-    {
-        if(st % 2 == 1) ret = max(ret, maxSegTree[st]);
-        if(en % 2 == 0) ret = max(ret, maxSegTree[en]);
-
-        st = (st + 1) / 2;
-        en = (en - 1) / 2;
+    while(st <= en) {
+        if(st % 2 == 1) ret = max(ret, maxSegTree[st++]);
+        if(en % 2 == 0) ret = max(ret, maxSegTree[en--]);
+        st /= 2;
+        en /= 2;
     }
 
     return ret;
 }
 
-// 구간 중 최솟값 찾기
-int GetMinVal(int a, int b)
-{
+int GetMinVal(int a, int b) {
     int ret = INT_MAX;
+    int st = leafStart + a;
+    int en = leafStart + b;
 
-    int st = pow(2, k) - 1 + a;
-    int en = pow(2, k) - 1 + b;
-
-    while(st <= en)
-    {
-        if(st % 2 == 1) ret = min(ret, minSegTree[st]);
-        if(en % 2 == 0) ret = min(ret, minSegTree[en]);
-
-        st = (st + 1) / 2;
-        en = (en - 1) / 2;
+    while(st <= en) {
+        if(st % 2 == 1) ret = min(ret, minSegTree[st++]);
+        if(en % 2 == 0) ret = min(ret, minSegTree[en--]);
+        st /= 2;
+        en /= 2;
     }
 
     return ret;
 }
 
-int main()
-{
+int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
 
     cin >> n >> m;
 
     for(int i = 1; i <= n; i++) cin >> nums[i];
-    
-    // 1. 트리 초기화하기
-    while(pow(2, k) < n) k++;
 
-    treeSize = pow(2, k) * 2;
+    // 트리 크기 계산
+    while((1 << k) < n) k++;
+    leafStart = 1 << k; // 리프 노드 시작 인덱스
+    int treeSize = leafStart * 2;
 
     maxSegTree.resize(treeSize, 0);
     minSegTree.resize(treeSize, INT_MAX);
 
-    for(int i = 1; i <= n; i++)
-    {
-        int idx = i + pow(2,k) - 1;
-        maxSegTree[idx] = nums[i];
-        minSegTree[idx] = nums[i];
-    }
+    BuildSegmentTrees();
 
-    // 2. 트리 업데이트
-    SetMaxSegTree(treeSize - 1);
-    SetMinSegTree(treeSize - 1);
-
-    // 3. 질의 값 구하기
-    for(int i = 0; i < m; i++)
-    {
+    // 질의 처리
+    for(int i = 0; i < m; i++) {
         int st, en;
         cin >> st >> en;
 
