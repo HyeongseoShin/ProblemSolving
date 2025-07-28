@@ -6,7 +6,6 @@ vector<char> v;
 
 int l, c;
 
-bool isUsed[15];
 
 void GetAns(string cur, int idx, int len)
 {
@@ -25,11 +24,7 @@ void GetAns(string cur, int idx, int len)
 
     for(int i = idx; i < c; i++)
     {
-        if(isUsed[i]) continue;
-        
-        isUsed[i] = true;
         GetAns(cur + v[i], i+1, len + 1);
-        isUsed[i] = false;
     }
 }
 
