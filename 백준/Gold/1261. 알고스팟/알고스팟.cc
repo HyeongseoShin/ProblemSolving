@@ -14,14 +14,14 @@ int cnt[101][101];
 
 void BFS(int x, int y)
 {
-    queue<pair<int, int>> q;
-    q.push({x, y});
+    deque<pair<int, int>> dq;
+    dq.push_back({x, y});
     cnt[x][y] = 0;
 
-    while(!q.empty())
+    while(!dq.empty())
     {
-        auto [curX, curY] = q.front();
-        q.pop();
+        auto [curX, curY] = dq.front();
+        dq.pop_front();
 
         for(int i = 0; i < 4; i++)
         {
@@ -30,15 +30,16 @@ void BFS(int x, int y)
 
             if(nX < 0 || nX >= n || nY < 0 || nY >= m) continue;
             
-            if(board[nX][nY] == 0 && cnt[nX][nY] > cnt[curX][curY])
+            // cnt[curX][curY] : 현재까지 오는데 벽 부순 횟수
+            // board[nX][nY] : 빈 공간이면 0, 벽이면 1
+            int cost = cnt[curX][curY] + board[nX][nY];
+
+            if(cnt[nX][nY] > cost)
             {
-                cnt[nX][nY] = cnt[curX][curY];
-                q.push({nX, nY});
-            } 
-            else if(board[nX][nY] == 1 && cnt[nX][nY] > cnt[curX][curY] + 1)
-            {
-                cnt[nX][nY] = cnt[curX][curY] + 1;
-                q.push({nX, nY});
+                cnt[nX][nY] = cost;
+
+                if(board[nX][nY] == 0) dq.push_front({nX, nY});
+                else dq.push_back({nX, nY});
             }
             
         }
