@@ -22,27 +22,12 @@ void BFS()
     queue<tuple<int, int, int>> q;
 
     dist[0][0][0] = 0;
-    q.push({0, 0, dist[0][0][0]});
+    q.push({0, 0, 0});
 
     while(!q.empty())
     {
         auto [curX, curY, curHorse] = q.front();
         q.pop();
-
-        for(int i = 0; i < 4; i++)
-        {
-            int nX = curX + mX[i];
-            int nY = curY + mY[i];
-
-            if(nX < 0 || nX >= h || nY < 0 || nY >= w) continue;
-            if(board[nX][nY] == 1) continue;
-
-            if(dist[nX][nY][curHorse] > dist[curX][curY][curHorse] + 1)
-            {
-                dist[nX][nY][curHorse] = dist[curX][curY][curHorse] + 1;
-                q.push({nX, nY, curHorse});
-            }
-        }
 
         if(curHorse < k)
         {
@@ -53,14 +38,28 @@ void BFS()
 
                 if(nX < 0 || nX >= h || nY < 0 || nY >= w) continue;
                 if(board[nX][nY] == 1) continue;
+                if(dist[nX][nY][curHorse + 1] != -1) continue;
 
-                if(dist[nX][nY][curHorse + 1] > dist[curX][curY][curHorse] + 1)
-                {
-                    dist[nX][nY][curHorse + 1] = dist[curX][curY][curHorse] + 1;
-                    q.push({nX, nY, curHorse + 1});
-                }
+                dist[nX][nY][curHorse + 1] = dist[curX][curY][curHorse] + 1;
+                q.push({nX, nY, curHorse + 1});
             }
         }
+
+        for(int i = 0; i < 4; i++)
+        {
+            int nX = curX + mX[i];
+            int nY = curY + mY[i];
+
+            if(nX < 0 || nX >= h || nY < 0 || nY >= w) continue;
+            if(board[nX][nY] == 1) continue;
+            if(dist[nX][nY][curHorse] != -1) continue;
+
+            dist[nX][nY][curHorse] = dist[curX][curY][curHorse] + 1;
+            q.push({nX, nY, curHorse});
+
+        }
+
+        
     }
 
 }
@@ -81,23 +80,14 @@ int main()
         }
     }
 
-    // dist 초기화
-    for(int i = 0; i < h; i++)
-    {
-        for(int j = 0; j < w; j++)
-        {
-            for(int l = 0; l <= k; l++)
-            {
-                dist[i][j][l] = INT_MAX;
-            }
-        }
-    }
+    memset(dist, -1, sizeof(dist));
 
     BFS();
 
     int ans = INT_MAX;
     for(int i = 0; i <= k; i++)
     {
+        if(dist[h-1][w-1][i] == -1) continue;
         ans = min(ans, dist[h-1][w-1][i]);
     }
 
