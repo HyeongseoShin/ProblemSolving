@@ -46,25 +46,11 @@ void BFS(int x, int y)
     }
 }
 
-bool CheckBounds(int x, int y)
-{
-    for(int i = 0; i < 4; i++)
-    {
-        int nX = x + dx[i];
-        int nY = y + dy[i];
-
-        if(nX < 0 || nX >= n || nY < 0 || nY >= n) continue;
-        if(island[nX][nY] == 0) return true;
-    }
-
-    return false;
-
-}
-
 int FindShortestBridge(int num)
 {
     queue<pair<int, int>> q;
-    int depth = 0;
+    int dist[101][101];
+    memset(dist, -1, sizeof(dist));
 
     for(int i = 0; i < n; i++)
     {
@@ -73,37 +59,35 @@ int FindShortestBridge(int num)
             if(island[i][j] == num)
             {
                 q.push({i, j});
-                vis[i][j] = true;
+                dist[i][j] = 0;
             }
         }
     }
 
     while(!q.empty())
     {
-        int qs = q.size();
-        while(qs--)
+        auto [curX, curY] = q.front();
+        q.pop();
+
+        for(int i = 0; i < 4; i++)
         {
-            auto [curX, curY] = q.front();
-            q.pop();
+            int nX = curX + dx[i];
+            int nY = curY + dy[i];
 
-            for(int i = 0; i < 4; i++)
+            if(nX < 0 || nX >= n || nY < 0 || nY >= n) continue;
+            if(island[nX][nY] == num) continue;
+            if(dist[nX][nY] != -1) continue;
+
+            if(island[nX][nY] == 0)
             {
-                int nX = curX + dx[i];
-                int nY = curY + dy[i];
-
-                if(nX < 0 || nX >= n || nY < 0 || nY >= n) continue;
-                if(island[nX][nY] != 0 && island[nX][nY] != num) return depth;
-                if(vis[nX][nY]) continue;
-
-                vis[nX][nY] = true;
+                dist[nX][nY] = dist[curX][curY] + 1;
                 q.push({nX, nY});
             }
+            else return dist[curX][curY];   
         }
-
-        depth++;
     }
 
-    return depth;
+    return 0;
 }
 
 int main()
@@ -137,7 +121,6 @@ int main()
     for(int i = 1; i < no; i++)
     {
         ans = min(ans, FindShortestBridge(i));
-        memset(vis, false, sizeof(vis));
     }
 
     cout << ans << "\n";
