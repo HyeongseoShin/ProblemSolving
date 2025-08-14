@@ -1,87 +1,71 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
-// 해당 알파벳 읽을 수 있는지
-set<char> isReadable;
-
 int n, k;
-vector<string> v;
-
+vector<string> words;
+bool readable[26]; // 알파벳 읽을 수 있는지 여부
 int ans = 0;
 
-int GetCnt()
-{
+int GetCnt() {
     int cnt = 0;
-    for(auto s : v)
-    {
+    for (auto &s : words) {
         bool isPossible = true;
-        for(int i = 0; i < (int)s.length(); i++)
-        {
-            if(isReadable.count(s[i]) == 0)
-            {
+        for (char c : s) {
+            if (!readable[c - 'a']) {
                 isPossible = false;
                 break;
             }
         }
-
-        if(isPossible) cnt++;
+        if (isPossible) cnt++;
     }
-
     return cnt;
 }
-void GetAns(char cur, int cnt)
-{
-    if(cnt == k)
-    {
+
+void GetAns(int start, int learned) {
+    if (learned == k) {
         ans = max(ans, GetCnt());
         return;
     }
 
-    for(char c = cur; c <= 'z'; c++)
-    {
-        if(isReadable.count(c) > 0) continue;
-        isReadable.insert(c);
-        GetAns(c, cnt + 1);
-        isReadable.erase(c);
+    for (int i = start; i < 26; i++) {
+        if (readable[i]) continue;
+        readable[i] = true;
+        GetAns(i + 1, learned + 1);
+        readable[i] = false;
     }
-
 }
-int main()
-{
-    ios::sync_with_stdio(0);
-    cin.tie(0);
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
     cin >> n >> k;
 
-    for(int i = 0; i < n; i++)
-    {
-        string s;
-        cin >> s;
-        v.push_back(s);
-    }
-
-    // 가르칠 문자 개수가 5보다 작으면 아예 불가능
-    if(k < 5)
-    {
-        cout << "0\n";
+    if (k < 5) { // a, n, t, i, c 필수
+        cout << 0 << "\n";
         return 0;
     }
 
-    // anta ~ tica : a, n, t, i, c는 무조건 가르쳐야 함
-    isReadable.insert('a');
-    isReadable.insert('n');
-    isReadable.insert('t');
-    isReadable.insert('i');
-    isReadable.insert('c');
+    // 단어 입력
+    for (int i = 0; i < n; i++) {
+        string s;
+        cin >> s;
+        // 앞뒤 "anta"와 "tica" 제거
+        s = s.substr(4, s.size() - 8);
+        words.push_back(s);
+    }
+
+    // 필수 알파벳
+    readable['a' - 'a'] = true;
+    readable['n' - 'a'] = true;
+    readable['t' - 'a'] = true;
+    readable['i' - 'a'] = true;
+    readable['c' - 'a'] = true;
 
     k -= 5;
 
-    GetAns('b', 0);
+    GetAns(0, 0);
 
     cout << ans << "\n";
-
-    
-
     return 0;
 }
