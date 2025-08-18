@@ -36,8 +36,9 @@ int main()
             ans = {v[st], v[en]};
         }
 
-        if(v[st] + v[en] >= 0) en--;
-        else st++;
+        if(v[st] + v[en] > 0) en--;
+        else if(v[st] + v[en] < 0) st++;
+        else break;
     }
 
     cout << ans.first << " " << ans.second << "\n";
