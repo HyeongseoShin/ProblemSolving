@@ -31,10 +31,6 @@ int main()
 
     while(st < en)
     {
-        int mid = (st + en) / 2;
-
-        // cout << "st: " << st << " mid: " << mid <<  " en : " << en << "\n";
-
         if(abs(v[st] + v[en]) < abs(ans.first + ans.second))
         {
             ans = {v[st], v[en]};
