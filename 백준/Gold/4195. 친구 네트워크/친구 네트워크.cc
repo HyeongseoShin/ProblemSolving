@@ -40,11 +40,11 @@ int main()
     {
         cin >> f;
 
-        for(int i = 0; i < 200001; i++)
-        {
-            parent[i] = i;
-            sz[i] = 1;
-        }
+        // for(int i = 0; i < 200001; i++)
+        // {
+        //     parent[i] = i;
+        //     sz[i] = 1;
+        // }
 
         idx = 0;
         idxMap.clear();
@@ -56,8 +56,18 @@ int main()
             cin >> from >> to;
 
             // 둘다 parent 없으면 일단 추가
-            if(idxMap.find(from) == idxMap.end()) idxMap[from] = idx++;
-            if(idxMap.find(to) == idxMap.end()) idxMap[to] = idx++;
+            if(idxMap.find(from) == idxMap.end())
+            {
+                parent[idx] = idx;
+                sz[idx] = 1;
+                idxMap[from] = idx++;
+            }
+            if(idxMap.find(to) == idxMap.end())
+            {
+                parent[idx] = idx;
+                sz[idx] = 1;
+                idxMap[to] = idx++;
+            }
 
             int idxFrom = idxMap[from];
             int idxTo = idxMap[to];
