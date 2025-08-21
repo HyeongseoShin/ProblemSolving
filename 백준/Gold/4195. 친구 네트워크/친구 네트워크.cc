@@ -5,7 +5,7 @@ using namespace std;
 int t, f;
 
 int idx = 0;
-map<string, int> idxMap;
+unordered_map<string, int> idxMap;
 int parent[200001];
 int sz[200001];
 
@@ -59,10 +59,8 @@ int main()
             if(idxMap.find(from) == idxMap.end()) idxMap[from] = idx++;
             if(idxMap.find(to) == idxMap.end()) idxMap[to] = idx++;
 
-            int idxFrom, idxTo;
-
-            idxFrom = idxMap[from];
-            idxTo = idxMap[to];
+            int idxFrom = idxMap[from];
+            int idxTo = idxMap[to];
             
             cout << Union(idxFrom, idxTo) << "\n";
         }
