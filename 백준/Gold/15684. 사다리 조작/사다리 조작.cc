@@ -37,15 +37,18 @@ void DFS(int x, int cnt)
     // 모두 끝에 도달하면 정답 업데이트
     if(Check())
     {
-        ans = cnt;
+        ans = min(ans, cnt);
+        return;
     }
+
+    if(cnt == 3) return;
 
     // 아래로 한 칸씩 내려가며 각 출발점마다 다리 설치
     for(int i = x; i <= h; i++)
     {
         for(int j = 1; j < n; j++)
         {
-            if(board[i][j] || board[i][j+1] || board[i][j-1]) continue;
+            if(board[i][j] || board[i][j-1] || board[i][j+1]) continue;
 
             board[i][j] = true;
             DFS(i, cnt + 1);
