@@ -6,6 +6,8 @@ int n, m, k;
 
 int A[11][11]; // 겨울에 추가될 양분
 
+
+// deque은 inde, iterator 모두 접근 가능함!
 // <나무 나이, 생존 여부>
 deque<int> tree[11][11];
 
@@ -20,7 +22,7 @@ int ans = 0;
 // <x, y, 나이>
 queue<tuple<int, int, int>> deadTrees;
 
-void spring()
+void springAndSummer()
 {
     for(int i = 1; i <= n; i++)
     {
@@ -30,35 +32,33 @@ void spring()
 
             if(sz == 0) continue;
 
+            deque<int> newTrees;
+
+            int deadWater = 0;
+
             // 나이가 어린 나무부터 자신의 나이만큼 양분 먹음
             for(int k = 0; k < sz; k++)
             {
-                int age = tree[i][j].front();
-                tree[i][j].pop_front();
+                int age = tree[i][j][k];
 
-                if(water[i][j] < age) deadTrees.push({i, j, age});
-
-                else
+                if(water[i][j] >= age)
                 {
                     water[i][j] -= age;
 
                     // 양분 먹으면 나이 + 1
-                    tree[i][j].push_back(age+1); 
+                    newTrees.push_back(age+1); 
+                }
+
+                // 여름 : 봄에 죽은 나무가 영양분으로 변경됨
+                else
+                {
+                    deadWater += (age / 2);
                 }
             }
+
+            water[i][j] += deadWater;
+            tree[i][j] = move(newTrees);
         }
-    }
-}
-
-void summer()
-{
-    // 봄에 죽은 나무가 영양분으로 변경됨
-    while(!deadTrees.empty())
-    {
-        auto [x, y, age] = deadTrees.front();
-        deadTrees.pop();
-
-        water[x][y] += (age/2);
     }
 }
 
@@ -76,15 +76,10 @@ void fall()
 
             for(int k = 0; k < sz; k++)
             {
-                int age = tree[i][j].front();
-                tree[i][j].pop_front();
+                int age = tree[i][j][k];
 
-                if(age % 5 != 0) 
-                {
-                    tree[i][j].push_back(age);
-                    continue;
-                }
-
+                if(age % 5 != 0) continue; 
+                
                 for(int dir = 0; dir < 8; dir++)
                 {
                     int nX = i + dx[dir];
@@ -94,8 +89,6 @@ void fall()
 
                     tree[nX][nY].push_front(1);
                 }
-
-                tree[i][j].push_back(age);
             }
         }
     }
@@ -144,8 +137,7 @@ int main()
     // 해마다 진행
     while(k--)
     {
-        spring();
-        summer();
+        springAndSummer();
         fall();
         winter();
     }
@@ -159,8 +151,6 @@ int main()
     }
 
     cout << ans << "\n";
-
-
 
     return 0;
 }
