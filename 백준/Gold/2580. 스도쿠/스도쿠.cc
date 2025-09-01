@@ -4,49 +4,18 @@ using namespace std;
 
 int board[9][9];
 
-bool isFinished = false;
+bool col[10][10]; // col[i][j] : i번째 열에 j가 있는지
+bool row[10][10]; // row[i][j] : i번째 해에 j가 있는지
+bool box[10][10]; // box[i][j] : i번째 박스에 j가 있는지
 
-bool checkIfExsists(int x, int y, int num)
+int getBoxNum(int x, int y)
 {
-    // 가로 확인
-    for(int k = 0; k < 9; k++)
-    {
-        if(board[x][k] == num) return true;
-    }
-
-    // 세로 확인
-    for(int k = 0; k < 9; k++)
-    {
-        if(board[k][y] == num) return true;
-    }
-
-    // 3x3 확인
-    int stX = 0;
-    int stY = 0;
-
-    if(x < 3) stX = 0;
-    else if(x < 6) stX = 3;
-    else if(x < 9) stX = 6;
-
-    if(y < 3) stY = 0;
-    else if(y < 6) stY = 3;
-    else if(y < 9) stY = 6;
-
-    for(int i = stX; i < stX + 3; i++)
-    {
-        for(int j = stY; j < stY + 3; j++)
-        {
-            if(board[i][j] == num) return true;
-        }
-    }
-
-    return false;
+    return ((x / 3) * 3 + (y / 3));
 }
+
 
 void sudoku(int x, int y)
 {
-    if(isFinished) return;
-
     // 끝 출력
     if(x > 8)
     {
@@ -59,8 +28,7 @@ void sudoku(int x, int y)
             cout << "\n";
         }
 
-        isFinished = true;
-        return;
+        exit(0);
     }
 
     int nX = x;
@@ -79,14 +47,16 @@ void sudoku(int x, int y)
     {
         for(int num = 1; num <= 9; num++)
         {
-            if(checkIfExsists(x, y, num)) continue;
+            int boxIdx = getBoxNum(x, y);
+            if(row[x][num] || col[y][num] || box[boxIdx][num]) continue;
 
             // 없으면 삽입 후 백트래킹 진행
+            row[x][num] = col[y][num] = box[boxIdx][num] = true;
             board[x][y] = num;
 
             sudoku(nX, nY);
 
-            if(isFinished) return;
+            row[x][num] = col[y][num] = box[boxIdx][num] = false;
             board[x][y] = 0;
         }
 
@@ -103,12 +73,22 @@ int main()
         for(int j = 0; j < 9; j++)
         {
             cin >> board[i][j];
+
+            // 빈 칸이 아니면 행, 열, 박스에 숫자 있닥 표시하기
+            if(board[i][j] != 0)
+            {
+                int num = board[i][j];
+                row[i][num] = true;
+                col[j][num]= true;
+
+                int boxIdx = getBoxNum(i, j);
+
+                box[boxIdx][num] = true;
+            }
         }
     }
 
     sudoku(0, 0);
-
-
 
     return 0;
 }
