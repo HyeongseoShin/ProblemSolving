@@ -2,14 +2,11 @@
 
 using namespace std;
 
-typedef long long ll;
-
 int n;
 
-ll ans = 0;
+int ans = 0;
 
-vector<pair<ll, ll>> v;
-stack<pair<ll, ll>> stk;
+vector<pair<int, int>> v;
 
 int main()
 {
@@ -20,49 +17,37 @@ int main()
 
     for(int i = 0; i < n; i++)
     {
-        ll x, y;
+        int x, y;
 
         cin >> x >> y;
 
-        int st = min(x, y);
-        int en = max(x, y);
-
-        v.push_back({st, en});
+        v.push_back({x, y});
     }
 
     sort(v.begin(), v.end());
 
-    stk.push({v[0].first, v[0].second});
+    int st = v[0].first;
+    int en = v[0].second;
 
-    for(int i = 0; i < n; i++)
+    for(int i = 1; i < n; i++)
     {
-        auto [st, en] = v[i];
+        auto [curSt, curEn] = v[i];
 
-        if(stk.empty()) stk.push({st, en});
+        if(curSt <= en)
+        {
+            en = max(en, curEn);
+        }
+
 
         else
         {
-            auto [topSt, topEn] = stk.top();
-
-            if(topSt <= st && st <= topEn && en > topEn)
-            {
-                stk.pop();
-                stk.push({topSt, en});
-            }
-
-            else if(topEn < st) stk.push({st, en});
+            ans += (en - st);
+            st = curSt;
+            en = curEn;
         }
     }
 
-    while(!stk.empty())
-    {
-        auto [st, en] = stk.top();
-
-        // cout << "st: " << st << " en: " << en << "\n";
-        stk.pop();
-
-        ans += abs(st - en);
-    }
+    ans += (en - st);
 
     cout << ans << "\n";
 
