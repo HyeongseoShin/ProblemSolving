@@ -1,14 +1,6 @@
-// https://www.acmicpc.net/problem/14442
-
-// 분류 : BFS
-
-// 0% 틀렸습니다
-
 #include <bits/stdc++.h>
 
 using namespace std;
-
-#define MAX 1000001
 
 int n, m, k;
 
@@ -20,17 +12,20 @@ int dist[1001][1001][11];
 int dx[4] = {-1, 1, 0, 0};
 int dy[4] = {0, 0, -1, 1};
 
-void BFS()
+int BFS()
 {
-    queue<pair<int, int>> q;
-    q.push({0, 0});
+    // <x좌표, y좌표, 벽 부순 횟수>
+    queue<tuple<int, int, int>> q;
+    q.push({0, 0, 0});
 
-    for(int i = 0; i <= k; i++) dist[0][0][i] = 1;
+    dist[0][0][0] = 1;
 
     while(!q.empty())
     {
-        auto [curX, curY] = q.front();
+        auto [curX, curY, broken] = q.front();
         q.pop();
+
+        if(curX == n - 1 && curY == m - 1) return dist[curX][curY][broken];
 
         for(int i = 0; i < 4; i++)
         {
@@ -43,30 +38,27 @@ void BFS()
             // 빈 칸이라면 그냥 진행
             if(board[nX][nY] == 0)
             {
-                for(int j = 0; j <= k; j++)
-                {
-                    if(dist[nX][nY][j] > dist[curX][curY][j] + 1)
-                    {
-                        dist[nX][nY][j] = dist[curX][curY][j] + 1;
-                        q.push({nX, nY});
-                    }
-                }
+                // 방문 확인
+                if(dist[nX][nY][broken] != 0) continue;
+                dist[nX][nY][broken] = dist[curX][curY][broken] + 1;
+                q.push({nX, nY, broken});
+                
             }
 
             // 벽이라면
             else
             {
-                for(int j = 1; j <= k; j++)
-                {
-                    if(dist[nX][nY][j] > dist[curX][curY][j-1] + 1)
-                    {
-                        dist[nX][nY][j] = dist[curX][curY][j-1] + 1;
-                        q.push({nX, nY});
-                    }
-                }
+                if(broken >= k) continue; // 이미 벽 부순 횟수 다 썼으면 pass
+                if(dist[nX][nY][broken+1] != 0) continue; // 이미 방문했다면 pass
+                
+                dist[nX][nY][broken+1] = dist[curX][curY][broken] + 1;
+                q.push({nX, nY, broken+1});
             }
         }
     }
+
+    // 목표 지점 방문 못하면 -1 리턴
+    return -1;
 }
 int main()
 {
@@ -83,24 +75,10 @@ int main()
         for(int j = 0; j < m; j++)
         {
             board[i][j] = s[j] - '0';
-            
-            // dist 배열 초기화
-            for(int l = 0; l <= k; l++) dist[i][j][l] = MAX;
         }
     }
 
-    BFS();
-
-    int ans = MAX;
-
-    for(int i = 0; i <= k; i++)
-    {
-        ans = min(ans, dist[n-1][m-1][i]);
-    }
-
-    if(ans == MAX) ans = -1;
-
-    cout << ans << "\n";
+    cout << BFS() << "\n";
 
     return 0;
 }
