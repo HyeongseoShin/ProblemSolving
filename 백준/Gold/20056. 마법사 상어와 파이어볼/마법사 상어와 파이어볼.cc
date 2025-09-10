@@ -37,8 +37,8 @@ void move()
                 int nX = (i + (dx[d] * s)) % n;
                 int nY = (j + (dy[d] * s)) % n;
 
-                if(nX < 0) nX = (n + nX);
-                if(nY < 0) nY = (n + nY);
+                if(nX < 0) nX += n;
+                if(nY < 0) nY += n;
 
                 // 이동 추가
                 fires.push({nX, nY, m, s, d});
@@ -94,23 +94,16 @@ void move()
             // 질량이 0이면 없어지도록
             if(totalM == 0) continue;
 
-            int newDir[4];
             // 방향이 모두 홀 or 짝이면 0, 2, 4, 6
-            if(isDirSame)
-            {
-                newDir[0] = 0;
-                newDir[1] = 2;
-                newDir[2] = 4;
-                newDir[3] = 6;
-            }
-
+            int newDir[4]= {0, 2, 4, 6};
+            
             // 하나라도 다르면 1, 3, 5, 7
-            else
+            if(!isDirSame)
             {
-                newDir[0] = 1;
-                newDir[1] = 3;
-                newDir[2] = 5;
-                newDir[3] = 7;
+                newDir[0]++;
+                newDir[1]++;
+                newDir[2]++;
+                newDir[3]++;
             }
 
             // 합쳐진 파이어볼은 4개로 분할
