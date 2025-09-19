@@ -1,3 +1,11 @@
+// https://www.acmicpc.net/problem/1563
+
+// 분류 : DP
+
+// 스스로 못 풂
+
+// 참고 : https://kibbomi.tistory.com/98
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -17,6 +25,33 @@ int n;
 // dp[n][1][2] : 1번 지각, 2번 결석
 int dp[1001][2][3];
 
+// Top-Down DP : 재귀
+// 보통 리턴 값 있음
+
+// 메모이제이션 활용 : 가지치기로 경우의 수 줄이기
+// Base Condition 확실히
+int TopDown(int d, int l, int a)
+{
+    // 2번 지각하면 끝
+    if(l == 2) return 0;
+
+    // 3번 연속 지각하면 끝
+    if(a == 3) return 0;
+
+    // 날짜 지나면 끝
+    if(d > n) return 1;
+
+    int &ret = dp[d][l][a];
+
+    // 이미 해당 상태 방문한 경우 있으면 가지치기 : 메모이제이션
+    if(ret != -1) return ret;
+
+    // 오늘 출석, 지각, 결석한 경우
+    // 출석, 지각한 경우 연속 결석 횟수 초기화!
+    ret = (TopDown(d + 1, l, 0) + TopDown(d + 1, l + 1, 0) + TopDown(d + 1, l, a+1)) % MOD;
+    return ret;
+}
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -24,28 +59,8 @@ int main()
 
     cin >> n;
 
-    dp[1][0][0] = dp[1][1][0] = dp[1][0][1] = 1;
-
-    for(int i = 2; i <= n; i++)
-    {
-        // 한 번도 지각하지 않은 상태로 오늘 출석하면 연속 결석 횟수 0으로 초기화
-        dp[i][0][0] = (dp[i-1][0][0] + dp[i-1][0][1] + dp[i-1][0][2]) % MOD;
-
-        // 한 번도 지각하지 않은 상태로 오늘 결석으로 했다면 이전 [지각][결석일자] 경우의 수에서 업데이트
-        dp[i][0][1] = dp[i-1][0][0] % MOD;
-        dp[i][0][2] = dp[i-1][0][1] % MOD;
-
-
-        // 이 떄까지 한 번 지각하지 않은 상태로 오늘 지각한 경우
-        // 이 때까지 한 번 지각한 상태로 오늘 출석한 경우
-        dp[i][1][0] = (dp[i-1][0][0] + dp[i-1][0][1] + dp[i-1][0][2] + dp[i-1][1][0] + dp[i-1][1][1] + dp[i-1][1][2]) % MOD;
-
-        // 한 번 지각한 상태로 오늘 결석으로 했다면 이전 [지각][결석일자] 경우의 수에서 업데이트
-        dp[i][1][1] = dp[i-1][1][0] % MOD;
-        dp[i][1][2] = dp[i-1][1][1] % MOD;
-    }
-
-    int ans = (dp[n][0][0] + dp[n][0][1] + dp[n][0][2] + dp[n][1][0] + dp[n][1][1] + dp[n][1][2]) % MOD;
+    memset(dp, -1, sizeof(dp));
+    int ans = TopDown(1, 0, 0);
 
     cout << ans << "\n";
 
