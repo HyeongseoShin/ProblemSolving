@@ -16,9 +16,6 @@ int x[101];
 // 인접 리스트 <비용, 도착점>
 vector<pair<int, int>> adj[2001];
 
-// 최단 경로로 갈 때 지나온 경로 저장
-int pre[2001];
-
 // 시작점부터 다른 정점까지의 최단 거리 저장
 int distS[2001];
 
@@ -73,8 +70,6 @@ int main()
 
     while(T--)
     {
-        memset(pre, -1, sizeof(pre));
-
         cin >> n >> m >> t;
 
         cin >> s >> g >> h;
@@ -107,27 +102,6 @@ int main()
         Dijkstra(g, distG);
         Dijkstra(h, distH);
 
-        // cout << "s : " << s << "부터 거리\n";
-        // for(int i = 1; i <= n; i++)
-        // {
-        //     cout << distS[i] << " ";
-        // }
-        // cout << "\n";
-
-        // cout << "g : " << g << "부터 거리\n";
-        // for(int i = 1; i <= n; i++)
-        // {
-        //     cout << distG[i] << " ";
-        // }
-        // cout << "\n";
-
-        // cout << "h : " << h << "부터 거리\n";
-        // for(int i = 1; i <= n; i++)
-        // {
-        //     cout << distH[i] << " ";
-        // }
-        // cout << "\n";
-
         sort(x, x + t);
         for(int i = 0; i < t; i++)
         {
@@ -142,8 +116,6 @@ int main()
         }
 
         cout << "\n";
-
-        
     }
 
     return 0;
