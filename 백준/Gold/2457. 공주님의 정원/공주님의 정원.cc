@@ -1,61 +1,49 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
-int n;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-// 꽃 정보 <피는 날짜, 지는 날짜>
-vector<pair<int, int>> flowers;
-
-int main()
-{
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-
+    int n;
     cin >> n;
-
-    for(int i = 0; i < n; i++)
-    {
-        int m1, d1, m2, d2;
+    vector<pair<int,int>> flowers;
+    for (int i = 0; i < n; ++i) {
+        int m1,d1,m2,d2;
         cin >> m1 >> d1 >> m2 >> d2;
-
-        int open = m1 * 100 + d1;
-        int close = m2 * 100 + d2;
-
-        flowers.push_back({open, close});
+        int st = m1 * 100 + d1;
+        int en = m2 * 100 + d2;
+        flowers.push_back({st, en});
     }
 
-    // 피는 날짜 순으로 오름차순 정렬
-    sort(flowers.begin(), flowers.end());
+    // start 오름차순, 같으면 end 내림차순 (같은 start일 때 더 긴 구간을 먼저 고려)
+    sort(flowers.begin(), flowers.end(), [](const pair<int,int>& a, const pair<int,int>& b){
+        if (a.first != b.first) return a.first < b.first;
+        return a.second > b.second;
+    });
 
-    // 현재 핀 꽃 중 가장 빨리 지는 꽃
-    int minEn = 301;
-    
-    // 현재 핀 꽃 중 가장 늦게 지는 꽃
-    int maxEn = 301;
+    int current = 301;    // 지금까지 커버된 마지막 날짜 (우린 [301, 1201) 을 덮어야 함)
+    int target = 1201;    // 목표: current >= 1201
+    int idx = 0;          // flowers 인덱스
+    int ans = 0;
+    int nFlowers = flowers.size();
 
-    int cnt = 1; // 피어있는 꽃의 개수
-
-    for(auto [st, en] : flowers)
-    {
-        // 이미 모든 꽃 커버 완료
-        if(maxEn >= 1201) break;
-
-        if(st > minEn)
-        {
-            minEn = maxEn;
-            cnt++;
+    while (current < target) {
+        int best = current; // 이번 단계에서 확장 가능한 최대 끝
+        // start <= current 인 모든 꽃을 보면서 best 갱신
+        while (idx < nFlowers && flowers[idx].first <= current) {
+            best = max(best, flowers[idx].second);
+            idx++;
         }
-
-        if(st > minEn) break;
-
-        maxEn = max(maxEn, en);
+        if (best == current) { // 확장 불가 -> 불가능
+            cout << 0 << "\n";
+            return 0;
+        }
+        // 확장 성공
+        current = best;
+        ans++;
     }
 
-
-    // 12월 1일 전에 꽃이 지면 실패
-    if(maxEn < 1201) cnt = 0;
-    cout << cnt << "\n";
-
+    cout << ans << "\n";
     return 0;
 }
