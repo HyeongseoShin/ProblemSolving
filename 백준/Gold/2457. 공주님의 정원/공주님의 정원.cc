@@ -1,49 +1,64 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+int n;
 
-    int n;
+// 꽃 정보 <피는 날짜, 지는 날짜>
+vector<pair<int, int>> flowers;
+
+int main()
+{
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+
     cin >> n;
-    vector<pair<int,int>> flowers;
-    for (int i = 0; i < n; ++i) {
-        int m1,d1,m2,d2;
+
+    for(int i = 0; i < n; i++)
+    {
+        int m1, d1, m2, d2;
         cin >> m1 >> d1 >> m2 >> d2;
-        int st = m1 * 100 + d1;
-        int en = m2 * 100 + d2;
-        flowers.push_back({st, en});
+
+        int open = m1 * 100 + d1;
+        int close = m2 * 100 + d2;
+
+        flowers.push_back({open, close});
     }
 
-    // start 오름차순, 같으면 end 내림차순 (같은 start일 때 더 긴 구간을 먼저 고려)
-    sort(flowers.begin(), flowers.end(), [](const pair<int,int>& a, const pair<int,int>& b){
-        if (a.first != b.first) return a.first < b.first;
-        return a.second > b.second;
-    });
+    // 피는 날짜 순으로 오름차순 정렬
+    sort(flowers.begin(), flowers.end());
 
-    int current = 301;    // 지금까지 커버된 마지막 날짜 (우린 [301, 1201) 을 덮어야 함)
-    int target = 1201;    // 목표: current >= 1201
-    int idx = 0;          // flowers 인덱스
-    int ans = 0;
-    int nFlowers = flowers.size();
+    int cur = 301; // 지금까지 연속으로 커버된 마지막 날짜
+    int idx = 0; // 현재 보고 있는 꽃
+    int ans = 0; // 심어야하는 꽃 개수 (정답)
 
-    while (current < target) {
-        int best = current; // 이번 단계에서 확장 가능한 최대 끝
-        // start <= current 인 모든 꽃을 보면서 best 갱신
-        while (idx < nFlowers && flowers[idx].first <= current) {
-            best = max(best, flowers[idx].second);
+    while(cur < 1201)
+    {
+        int best = cur; // 이번 단계에서 찾은 가장 마지막에 지는 꽃 날짜
+
+        int open = flowers[idx].first;
+        int close = flowers[idx].second;
+
+        while(idx < n && open <= cur)
+        {
+            best = max(best, close);
             idx++;
+
+            open = flowers[idx].first;
+            close = flowers[idx].second;
         }
-        if (best == current) { // 확장 불가 -> 불가능
-            cout << 0 << "\n";
-            return 0;
+
+        if(best == cur) // 확장 불가
+        {
+            ans = 0;
+            break;
         }
-        // 확장 성공
-        current = best;
+
+        cur = best;
         ans++;
     }
 
     cout << ans << "\n";
+
     return 0;
 }
