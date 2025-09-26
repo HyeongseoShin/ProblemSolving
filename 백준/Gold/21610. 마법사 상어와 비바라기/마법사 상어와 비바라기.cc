@@ -27,31 +27,12 @@ void moveCloud(int d, int s)
         auto [x, y] = cloudPos.front();
         cloudPos.pop();
 
-        int nX = (x + (dx[d] * s));
-        int nY = (y + (dy[d] * s));
+        int nX = (x + (dx[d] * s)) % n;
+        int nY = (y + (dy[d] * s)) % n;
 
         // 끝과 끝 연결
-        if(nX >= n) nX %= n;
-        else if(nX < 0)
-        {
-            nX = x;
-            for(int i = 0; i < s; i++)
-            {
-                nX += dx[d];
-                if(nX < 0) nX = n - 1;
-            }
-        }
-        
-        if(nY >= n) nY %= n;
-        else if(nY < 0)
-        {
-            nY = y;
-            for(int i = 0; i < s; i++)
-            {
-                nY += dy[d];
-                if(nY < 0) nY = n - 1;
-            }
-        }
+        if(nX < 0) nX += n;
+        if(nY < 0) nY += n;
 
         isCloud[x][y] = false; // 기존 칸에 구름 하나 없어짐
         isCloud[nX][nY] = true; // 새로운 구름 자리 옮김
@@ -149,7 +130,7 @@ int main()
     }
 
     int ans = 0;
-    
+
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
