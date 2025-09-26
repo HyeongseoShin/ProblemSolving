@@ -1,5 +1,3 @@
-// https://www.acmicpc.net/problem/21610
-
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -12,23 +10,25 @@ int n, m;
 
 int board[51][51]; // 바구니에 담긴 물의 양 정보
 
-int cloudCnt[51][51]; // 각 칸에 있는 구름 개수
+bool isCloud[51][51]; // 각 칸에 있는 구름 있는지 없는지 확인
+
+bool isDeleted[51][51]; // 구름이 삭제된 칸인지 확인
 
 // 구름 위치
 queue<pair<int, int>> cloudPos;
 
-void printBoard()
-{
-    cout << "\n=========\n";
-    for(int i = 0; i < n; i++)
-    {
-        for(int j = 0; j < n; j++)
-        {
-            cout << board[i][j] << " ";
-        }
-        cout << "\n";
-    }
-}
+// void printBoard()
+// {
+//     cout << "\n=========\n";
+//     for(int i = 0; i < n; i++)
+//     {
+//         for(int j = 0; j < n; j++)
+//         {
+//             cout << board[i][j] << " ";
+//         }
+//         cout << "\n";
+//     }
+// }
 
 // 방향, 칸
 void moveCloud(int d, int s)
@@ -66,8 +66,8 @@ void moveCloud(int d, int s)
             }
         }
 
-        cloudCnt[x][y]--; // 기존 칸에 구름 하나 없어짐
-        cloudCnt[nX][nY]++; // 새로운 구름 자리 옮김
+        isCloud[x][y] = false; // 기존 칸에 구름 하나 없어짐
+        isCloud[nX][nY] = true; // 새로운 구름 자리 옮김
 
         board[nX][nY]++; // 물 양 ++
 
@@ -79,17 +79,19 @@ void moveCloud(int d, int s)
     // cout << "구름 크기 : " << (int)cloudPos.size() << "\n";
 
     // 모든 구름이 사라진다.
-    for(int i = 0; i < n; i++)
-    {
-        for(int j = 0; j < n; j++)
-        {
-            cloudCnt[i][j] = 0;
-        }
-    }
+    // for(int i = 0; i < n; i++)
+    // {
+    //     for(int j = 0; j < n; j++)
+    //     {
+    //         cloudCnt[i][j] = 0;
+    //     }
+    // }
+
+    memset(isCloud, false, sizeof(isCloud));
 
     // memset(isCloud, false, sizeof(isCloud));
 
-    vector<pair<int,int>> deletedClouds; // 3에서 사라진 구름 위치 저장
+    memset(isDeleted, false, sizeof(isDeleted));
 
     // 2에서 물의 양이 증가한 칸 = 3에서 구름이 사라진 칸
     while(!cloudPos.empty())
@@ -98,7 +100,7 @@ void moveCloud(int d, int s)
         cloudPos.pop();
 
         // 사라진 구름 위치 저장
-        deletedClouds.push_back({curX, curY});
+        isDeleted[curX][curY] = true;
 
         int cnt = 0; // 대각선 1칸에 물이 있는 바구니의 수 구하기
         for(int i = 2; i <= 8; i += 2)
@@ -123,27 +125,14 @@ void moveCloud(int d, int s)
     {
         for(int j = 0; j < n; j++)
         {
-            // 현재 칸이 3번에서 구름 사라진 위치라면
-            bool isDeleted = false;
-            for(int tmp = 0; tmp < (int)deletedClouds.size(); tmp++)
-            {
-                auto [tmpX, tmpY] = deletedClouds[tmp];
-                // cout << "기존 구름 위치: " << tmpX << " " << tmpY << "\n";
-                if(i == tmpX && j == tmpY)
-                {
-                    isDeleted = true;
-                    break;
-                }
-            }
-
-            if(isDeleted) continue;
+            if(isDeleted[i][j]) continue;
 
             // 3에서 사라진 구름 위치 지정
             if(board[i][j] >= 2)
             {
                 // 아니라면 구름 생성
                 // 물 양 -= 2
-                cloudCnt[i][j]++;
+                isCloud[i][j] = true;
                 board[i][j] -= 2;
                 cloudPos.push({i, j});
 
@@ -174,10 +163,10 @@ int main()
     }
 
     // 비바라기 시전
-    // isCloud[n-1][0] = true;
-    // isCloud[n-1][1] = true;
-    // isCloud[n-2][0] = true;
-    // isCloud[n-2][1] = true;
+    isCloud[n-1][0] = true;
+    isCloud[n-1][1] = true;
+    isCloud[n-2][0] = true;
+    isCloud[n-2][1] = true;
 
     // 비구름 위치 저장
     cloudPos.push({n-1, 0});
@@ -186,10 +175,10 @@ int main()
     cloudPos.push({n-2, 1});
 
     // 각 칸에 구름 개수 ++
-    cloudCnt[n-1][0]++;
-    cloudCnt[n-1][1]++;
-    cloudCnt[n-2][0]++;
-    cloudCnt[n-2][1]++;
+    // cloudCnt[n-1][0]++;
+    // cloudCnt[n-1][1]++;
+    // cloudCnt[n-2][0]++;
+    // cloudCnt[n-2][1]++;
 
     while(m--)
     {
@@ -201,10 +190,7 @@ int main()
         moveCloud(d, s);
     }
 
-    // printBoard();
-
     int ans = 0;
-
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
