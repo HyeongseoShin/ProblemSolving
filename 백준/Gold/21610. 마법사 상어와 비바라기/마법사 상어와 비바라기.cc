@@ -9,9 +9,6 @@ int dy[9] = {0, -1, -1, 0, 1, 1, 1, 0, -1};
 int n, m;
 
 int board[51][51]; // 바구니에 담긴 물의 양 정보
-
-bool isCloud[51][51]; // 각 칸에 있는 구름 있는지 없는지 확인
-
 bool isDeleted[51][51]; // 구름이 삭제된 칸인지 확인
 
 // 구름 위치
@@ -34,17 +31,12 @@ void moveCloud(int d, int s)
         if(nX < 0) nX += n;
         if(nY < 0) nY += n;
 
-        isCloud[x][y] = false; // 기존 칸에 구름 하나 없어짐
-        isCloud[nX][nY] = true; // 새로운 구름 자리 옮김
-
         board[nX][nY]++; // 물 양 ++
 
         cloudPos.push({nX, nY}); // 구름 이동 위치 저장
     }
 
     // 모든 구름이 사라진다.
-    memset(isCloud, false, sizeof(isCloud));
-
     // 구름 삭제된 적 있는지 확인하는 배열 초기화
     memset(isDeleted, false, sizeof(isDeleted));
 
@@ -83,7 +75,6 @@ void moveCloud(int d, int s)
             {
                 // 아니라면 구름 생성
                 // 물 양 -= 2
-                isCloud[i][j] = true;
                 board[i][j] -= 2;
                 cloudPos.push({i, j});
             }
@@ -108,11 +99,6 @@ int main()
     }
 
     // 비바라기 시전
-    isCloud[n-1][0] = true;
-    isCloud[n-1][1] = true;
-    isCloud[n-2][0] = true;
-    isCloud[n-2][1] = true;
-
     // 비구름 위치 저장
     cloudPos.push({n-1, 0});
     cloudPos.push({n-1, 1});
