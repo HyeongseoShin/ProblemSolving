@@ -17,19 +17,6 @@ bool isDeleted[51][51]; // 구름이 삭제된 칸인지 확인
 // 구름 위치
 queue<pair<int, int>> cloudPos;
 
-// void printBoard()
-// {
-//     cout << "\n=========\n";
-//     for(int i = 0; i < n; i++)
-//     {
-//         for(int j = 0; j < n; j++)
-//         {
-//             cout << board[i][j] << " ";
-//         }
-//         cout << "\n";
-//     }
-// }
-
 // 방향, 칸
 void moveCloud(int d, int s)
 {
@@ -71,26 +58,13 @@ void moveCloud(int d, int s)
 
         board[nX][nY]++; // 물 양 ++
 
-        // cout << "curX: " << x << " curY: " << y << " nX: " << nX << " nY: " << nY << "\n";
-
         cloudPos.push({nX, nY}); // 구름 이동 위치 저장
     }
 
-    // cout << "구름 크기 : " << (int)cloudPos.size() << "\n";
-
     // 모든 구름이 사라진다.
-    // for(int i = 0; i < n; i++)
-    // {
-    //     for(int j = 0; j < n; j++)
-    //     {
-    //         cloudCnt[i][j] = 0;
-    //     }
-    // }
-
     memset(isCloud, false, sizeof(isCloud));
 
-    // memset(isCloud, false, sizeof(isCloud));
-
+    // 구름 삭제된 적 있는지 확인하는 배열 초기화
     memset(isDeleted, false, sizeof(isDeleted));
 
     // 2에서 물의 양이 증가한 칸 = 3에서 구름이 사라진 칸
@@ -115,19 +89,15 @@ void moveCloud(int d, int s)
         board[curX][curY] += cnt; // 대각선 1거리에 물 차있는 바구니 수만큼 물 양 증가
     }
 
-    // cout << "구름 크기 : " << (int)deletedClouds.size() << "\n";
-
-    // printBoard();    
-
     // 바구니에 저장된 물의 양이 2 이상인 모든 칸에 구름이 생기고 물의 양이 2가 줄어든다.
     // 구름이 생기는 칸은 3에서 구름이 사라진 칸이 아니어야 함
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
         {
+            // 3에서 사라진 구름 위치이면 패스
             if(isDeleted[i][j]) continue;
 
-            // 3에서 사라진 구름 위치 지정
             if(board[i][j] >= 2)
             {
                 // 아니라면 구름 생성
@@ -135,15 +105,9 @@ void moveCloud(int d, int s)
                 isCloud[i][j] = true;
                 board[i][j] -= 2;
                 cloudPos.push({i, j});
-
-                // cout << "새로운 구름 위치: " << i << " " << j << "\n";
             }
         }
     }
-
-    // printBoard();
-
-    // cout << "size: " << (int)cloudPos.size() << "\n";
 }
 
 int main()
@@ -174,12 +138,6 @@ int main()
     cloudPos.push({n-2, 0});
     cloudPos.push({n-2, 1});
 
-    // 각 칸에 구름 개수 ++
-    // cloudCnt[n-1][0]++;
-    // cloudCnt[n-1][1]++;
-    // cloudCnt[n-2][0]++;
-    // cloudCnt[n-2][1]++;
-
     while(m--)
     {
         // 방향, 칸 개수
@@ -191,6 +149,7 @@ int main()
     }
 
     int ans = 0;
+    
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < n; j++)
