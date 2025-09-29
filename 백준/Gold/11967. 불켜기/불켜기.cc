@@ -19,7 +19,6 @@ bool isLightOn[103][103];
 int turnLight()
 {
     queue<pair<int, int>> q;
-    queue<pair<int, int>> waitingQ; // 불 켜져 있지만 아직 방문 안 한 칸
 
     q.push({1, 1});
 
@@ -33,43 +32,43 @@ int turnLight()
         q.pop();
 
         // 불 켜기
-        for(int i = 0; i < (int)switches[curX][curY].size(); i++)
+        for(auto [nX, nY] : switches[curX][curY])
         {
-            auto [nX, nY] = switches[curX][curY][i];
-
             // 전에 방문했던 적이 있다면 방문 후보에 추가 X
             if(isLightOn[nX][nY]) continue;
             
             isLightOn[nX][nY] = true;
             cnt++;
 
-            // 방문 후보에 추가
-            waitingQ.push({nX, nY});
-        }
-
-        int sz = waitingQ.size();
-        while(sz--)
-        {
-            auto [x, y] = waitingQ.front();
-            waitingQ.pop();
-
+            // 현재 불 켠 방이 바로 접근 가능하면 큐에 삽입
             for(int i = 0; i < 4; i++)
             {
-                int nX = x + dx[i];
-                int nY = y + dy[i];
+                int aX = nX + dx[i];
+                int aY = nY + dy[i];
 
-                if(nX < 1 || nX > n || nY < 1 || nY > n) continue; // 범위 벗어나면 패스
-                if(isLightOn[nX][nY] && vis[nX][nY]) // 주위에 불 켜져 있고 방문한 곳 있으면 현재 위치에서 방문 가능
+                if(aX < 1 || aX > n || aY < 1 || aY > n) continue; // 범위 벗어나면 패스
+                if(isLightOn[aX][aY] && vis[aX][aY]) // 주위에 불 켜져 있고 방문한 곳 있으면 현재 위치에서 방문 가능
                 {
-                    q.push({x, y});
-                    vis[x][y] = true;
+                    q.push({nX, nY});
+                    vis[nX][nY] = true;
                     break;
                 }
             }
-
-            // 이번에 방문 못하게 되면 다시 후보에 넣기
-            if(!vis[x][y]) waitingQ.push({x, y});
         }
+
+        for(int i = 0; i < 4; i++)
+        {
+            int nX = curX + dx[i];
+            int nY = curY + dy[i];
+
+            if(nX < 1 || nX > n || nY < 1 || nY > n) continue;
+            if(vis[nX][nY]) continue;
+            if(!isLightOn[nX][nY]) continue;
+            
+            q.push({nX, nY});
+            vis[nX][nY] = true;
+        }
+
     }
 
     return cnt;
