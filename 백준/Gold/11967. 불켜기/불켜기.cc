@@ -7,9 +7,6 @@ int dy[4] = {0, 0, -1, 1};
 
 int n, m;
 
-// 1-indexed
-int board[103][103];
-
 // 각 방 별 불 켤 수 있는 스위치 목록
 // 1-indexed
 vector<pair<int, int>> switches[103][103];
@@ -19,7 +16,7 @@ bool vis[103][103]; // 방문 확인 배열
 // 1-indexed
 bool isLightOn[103][103];
 
-void turnLight()
+int turnLight()
 {
     queue<pair<int, int>> q;
     queue<pair<int, int>> waitingQ; // 불 켜져 있지만 아직 방문 안 한 칸
@@ -28,6 +25,7 @@ void turnLight()
 
     isLightOn[1][1] = true;
     vis[1][1] = true;
+    int cnt = 1;
 
     while(!q.empty())
     {
@@ -43,6 +41,7 @@ void turnLight()
             if(isLightOn[nX][nY]) continue;
             
             isLightOn[nX][nY] = true;
+            cnt++;
 
             // 방문 후보에 추가
             waitingQ.push({nX, nY});
@@ -72,6 +71,8 @@ void turnLight()
             if(!vis[x][y]) waitingQ.push({x, y});
         }
     }
+
+    return cnt;
 }
 
 int main()
@@ -89,21 +90,7 @@ int main()
         switches[x][y].push_back({a, b});
     }
 
-    turnLight();
-
-    int ans = 0;
-    for(int i = 1; i <= n; i++)
-    {
-        for(int j = 1; j <= n; j++)
-        {
-            if(isLightOn[i][j]) ans++;
-            // cout << isLightOn[i][j] << " ";
-        }
-        // cout << "\n";
-    }
-
-    cout << ans << "\n";
-
+    cout << turnLight() << "\n";
 
     return 0;
 }
