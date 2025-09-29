@@ -9,63 +9,48 @@ int goalX, goalY; // 도착 위치
 
 pair<int ,int> store[101]; // 편의점 좌표
 
-// 현재 편의점에서 도달 가능한 다른 편의점 & 도착점
-// <편의점 번호, x, y>
-// <-1, goalX, goalY>
-vector<tuple<int, int, int>> adj[101];
-bool vis[101]; // 편의점 방문 표시
-
-// <편의점 번호, x, y>
-queue<tuple<int, int, int>> q; // BFS에서 사용할 큐
-
-// 두 점 사이의 거리
-int getDist(int x1, int y1, int x2, int y2)
+// 두 점 사이의 거리가 맥주 20개로 갈 수 있는 거리인지 아닌지 판단
+bool isReachable(int x1, int y1, int x2, int y2)
 {
-    return abs(x1 - x2) + abs(y1 - y2);
+    if(abs(x1 - x2) + abs(y1 - y2) <= 20 * 50) return true;
+    else return false;
 }
 
 void BFS()
 {
+    bool vis[101]; // 편의점 방문 표시
+    memset(vis, false, sizeof(vis));
+
+    queue<pair<int, int>> q;
+    q.push({stX, stY});
+
     while(!q.empty())
     {
-        auto [cur, curX, curY] = q.front();
+        auto [curX, curY] = q.front();
         q.pop();
 
-        // 도착점이면 끝
-        if(curX == goalX && curY == goalY)
+        // 현재 위치에서 도착점 갈 수 있으면 끝
+        if(isReachable(curX, curY, goalX, goalY))
         {
             cout << "happy\n";
             return;
         }
 
-        for(auto [nxt, nX, nY] : adj[cur])
+        for(int i = 0; i < n; i++)
         {
-            // 도착점이면 끝
-            if(nxt == -1)
+            auto [sX, sY] = store[i];
+
+            if(vis[i]) continue;
+
+            if(isReachable(curX, curY, sX, sY))
             {
-                cout << "happy\n";
-                return;
+                q.push({sX, sY});
+                vis[i] = true;
             }
-
-            if(vis[nxt]) continue;
-
-            q.push({nxt, nX, nY});
-            vis[nxt] = true;
         }
     }
 
     cout << "sad\n";
-}
-
-// 배열 초기화
-void init()
-{
-    while(!q.empty()) q.pop();
-
-    for(int i = 0; i < 101; i++)
-    {
-        adj[i].clear();
-    }
 }
 
 int main()
@@ -77,8 +62,6 @@ int main()
 
     while(t--)
     {
-        init();
-
         cin >> n;
         cin >> stX >> stY;
 
@@ -91,47 +74,6 @@ int main()
         }
 
         cin >> goalX >> goalY;
-
-        // 바로 도착점 도착 가능하면 끝
-        if(getDist(stX, stY, goalX, goalY) <= 20 * 50)
-        {
-            cout << "happy\n";
-            continue; // 원래 return 0이어서 바로 프로그램 끝나서 틀렸었음;;
-        }
-
-        // 편의점 방문 배열 초기화
-        memset(vis, false, sizeof(vis));
-
-        // 현재 지점에서 도달 가능한 편의점 q.push() 후 BFS 진행
-        for(int i = 0; i < n; i++)
-        {
-            auto [x, y] = store[i];
-            if(getDist(stX, stY, x, y) <= 20 * 50)
-            {
-                q.push({i, x, y});
-                vis[i] = true;
-            }
-        }
-
-        // 각 편의점에서 맥주 20개로 도달 가능한 편의점 & 도착점 인접 리스트에 추가
-        for(int i = 0; i < n; i++)
-        {
-            auto [x1, y1] = store[i];
-
-            // 현재 편의점에서 도착점 도착 가능하면 인접 리스트에 추가
-            if(getDist(x1, y1, goalX, goalY) <= 20 * 50) adj[i].push_back({-1, goalX, goalY});
-
-            for(int j = i + 1; j < n; j++)
-            {
-                auto [x2, y2] = store[j];
-
-                if(getDist(x1, y1, x2, y2) <= 20 * 50)
-                {
-                    adj[i].push_back({j, x2, y2});
-                    adj[j].push_back({i, x1, y1});
-                }
-            }
-        }
 
         BFS();
     }
