@@ -4,31 +4,66 @@ using namespace std;
 
 int n;
 
-vector<int> adj[3001];
+vector<int> adj[3001]; // 인접리스트
+int dist[3001]; // 순환선 - 지선 간의 최단 거리
 
-int dist[3001];
+bool isInCycle[3001]; // 해당 정점이 사이클에 속하는지 확인
+bool vis[3001]; // 사이클 찾을 때 사용할 방문 배열
 
-bool isFinished = false;
-
-void DFS(int cur, int past, int curDist)
+bool findCycle(int cur, int prev, vector<int>& path)
 {
-    if(dist[cur] != -1)
-    {
-        cout << dist[cur] << " ";
-        isFinished = true;
+    vis[cur] = true;
+    path.push_back(cur);
 
-        return;
+    for(int nxt : adj[cur])
+    {
+        if(nxt == prev) continue;
+        if(!vis[nxt])
+        {
+            if(findCycle(nxt, cur, path)) return true;
+        }
+        else
+        {
+            int idx = find(path.begin(), path.end(), nxt) - path.begin();
+            for(int i = idx; i < (int)path.size(); i++)
+            {
+                isInCycle[path[i]] = true;
+            }
+
+            return true;
+        }
     }
 
-    dist[cur] = curDist + 1;
+    path.pop_back();
+    return false;
+}
 
-    for(auto nxt : adj[cur])
+void BFS()
+{
+    queue<int> q;
+
+    memset(dist, -1, sizeof(dist));
+    for(int i = 1; i <= n; i++)
     {
-        if(nxt == past) continue;
+        if(isInCycle[i])
+        {
+            dist[i] = 0;
+            q.push(i);
+        }
+    }
 
-        DFS(nxt, cur, dist[cur]);
+    while(!q.empty())
+    {
+        auto cur = q.front();
+        q.pop();
 
-        if(isFinished) return;
+        for(auto nxt : adj[cur])
+        {
+            if(dist[nxt] != -1) continue;
+
+            dist[nxt] = dist[cur] + 1;
+            q.push(nxt);
+        }
     }
 }
 
@@ -48,11 +83,14 @@ int main()
         adj[to].push_back(from);
     }
 
+    vector<int> path; // 사이클 찾기 위해 방문한 경로
+    findCycle(1, 0, path);
+
+    BFS();
+
     for(int i = 1; i <= n; i++)
     {
-        memset(dist, -1, sizeof(dist));
-        isFinished = false;
-        DFS(i, 0, -1);
+        cout<< dist[i] << " ";
     }
     cout << "\n";
 
