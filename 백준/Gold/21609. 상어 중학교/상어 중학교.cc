@@ -74,12 +74,12 @@ void makeGroup(int x, int y, int color)
             if(board[nX][nY] >= 1 && board[nX][nY] != color) continue; // 무지개가 아니고 현재 블록과 색이 다르면 패스
             if(groupVis[nX][nY]) continue; // 이미 방문한 곳이면 패스
             if(board[nX][nY] == 0) rainbowCnt++; // 그룹에 포함된 무지개 블록 개수++
-            else
-            {
-                // 기준점 블록 업데이트 : 무지개 블록은 아니어야 함
-                if(sX > nX) { sX = nX; sY = nY; }
-                else if(sX == nX && sY > nY) { sX = nX; sY = nY; }
-            }
+            // else
+            // {
+            //     // 기준점 블록 업데이트 : 무지개 블록은 아니어야 함
+            //     if(sX > nX) { sX = nX; sY = nY; }
+            //     else if(sX == nX && sY > nY) { sX = nX; sY = nY; }
+            // }
             
             tmpPath.push_back({nX, nY});
             groupVis[nX][nY] = true;
