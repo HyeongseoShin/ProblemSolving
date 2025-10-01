@@ -74,12 +74,6 @@ void makeGroup(int x, int y, int color)
             if(board[nX][nY] >= 1 && board[nX][nY] != color) continue; // 무지개가 아니고 현재 블록과 색이 다르면 패스
             if(groupVis[nX][nY]) continue; // 이미 방문한 곳이면 패스
             if(board[nX][nY] == 0) rainbowCnt++; // 그룹에 포함된 무지개 블록 개수++
-            // else
-            // {
-            //     // 기준점 블록 업데이트 : 무지개 블록은 아니어야 함
-            //     if(sX > nX) { sX = nX; sY = nY; }
-            //     else if(sX == nX && sY > nY) { sX = nX; sY = nY; }
-            // }
             
             tmpPath.push_back({nX, nY});
             groupVis[nX][nY] = true;
@@ -91,16 +85,6 @@ void makeGroup(int x, int y, int color)
 
     // 그룹 내 블록 개수 2개 이상이어야 함
     if(groupSz < 2) return;
-
-    // 그룹 생성할 수 없으면 리턴
-    if(sX == 21) return;
-
-    // cout << "sX: " << sX << " sY: " << sY << " groupSz: " << groupSz << " 색: " << board[sX][sY] << "\n";
-    // cout << "경로\n";
-    // for(auto [pX, pY] : tmpPath)
-    // {
-    //     cout << pX << " " << pY << "\n";
-    // }
 
     // 가장 큰 블록 그룹 찾기
     // 그룹 내 블록 개수 가장 많고
@@ -126,9 +110,7 @@ void makeGroup(int x, int y, int color)
 void deleteLargestGroup()
 {
     auto [largeX, largeY, largeSz, largeRainbow] = largestGroup;
-    // cout << "largeX: " << largeX << " largeY: " << largeY << " largeSz: " << largeSz << " 색: " << board[largeX][largeY] << "\n";
     score += (largeSz * largeSz); // 점수 증가
-    // cout << "score: " << score << "\n";
     remain -= largeSz; // 블록 삭제
 
     // 빈칸은 -2로 설정한다.
