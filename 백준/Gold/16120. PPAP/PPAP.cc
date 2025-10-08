@@ -34,12 +34,39 @@ int main()
 
     cin >> s;
 
+    // for(int i = 0; i < (int)s.length(); i++)
+    // {
+    //     if((int)stk.size() >= 4) check();
+
+    //     stk.push(s[i]);
+    //     v.push_back(s[i]);
+    // }
+
+    int pCnt = 0;
     for(int i = 0; i < (int)s.length(); i++)
     {
-        if((int)stk.size() >= 4) check();
+        if(s[i] == 'P')
+        {
+            if(pCnt >= 2 && stk.top() == 'A')
+            {
+                for(int i = 0; i < 3; i++) stk.pop();
 
-        stk.push(s[i]);
-        v.push_back(s[i]);
+                if(!stk.empty() && stk.top() == 'P') pCnt = 1;
+                else pCnt = 0;
+            }
+
+            stk.push(s[i]);
+            pCnt++;
+        }
+
+        else
+        {
+            if(pCnt < 2) pCnt = 0;
+            else if(!stk.empty() && stk.top() == 'A') pCnt = 0;
+
+            stk.push(s[i]);
+        }
+        
     }
 
     string ans = "";
