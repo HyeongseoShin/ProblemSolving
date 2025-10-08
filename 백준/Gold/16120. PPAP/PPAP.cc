@@ -5,28 +5,7 @@ using namespace std;
 string s;
 
 stack<char> stk;
-vector<char> v; // 현재 스택의 마지막 4자리 확인하기 위한 용도
 
-// 현재 스택의 마지막 4자리가 PPAP인지 확인
-void check()
-{
-    int len = (int)v.size();
-
-    // 마지막 4자리가 PPAP라면
-    if(v[len-1] == 'P' && v[len-2] == 'A' && v[len-3] == 'P' && v[len-4] == 'P')
-    {
-        for(int i = 0; i < 4; i++)
-        {
-            stk.pop();
-            v.pop_back();
-        }
-
-        stk.push('P');
-        v.push_back('P');
-    }
-
-    
-}
 int main()
 {
     ios::sync_with_stdio(0);
@@ -34,38 +13,29 @@ int main()
 
     cin >> s;
 
-    // for(int i = 0; i < (int)s.length(); i++)
-    // {
-    //     if((int)stk.size() >= 4) check();
-
-    //     stk.push(s[i]);
-    //     v.push_back(s[i]);
-    // }
-
-    int pCnt = 0;
+    int pCnt = 0; // 이전까지 P 나온 횟수
     for(int i = 0; i < (int)s.length(); i++)
     {
         if(s[i] == 'P')
         {
-            if(pCnt >= 2 && stk.top() == 'A')
+            if(pCnt >= 2 && stk.top() == 'A') // 현재 P 이고 이전까지 PPA 이면 => PPAP
             {
-                for(int i = 0; i < 3; i++) stk.pop();
+                for(int i = 0; i < 3; i++) stk.pop(); // PPA pop();
 
-                if(!stk.empty() && stk.top() == 'P') pCnt = 1;
+                if(!stk.empty() && stk.top() == 'P') pCnt = 1; // stk.top()이 P이면 pCnt = 1
                 else pCnt = 0;
             }
 
-            stk.push(s[i]);
             pCnt++;
         }
 
         else
         {
-            if(pCnt < 2) pCnt = 0;
-            else if(!stk.empty() && stk.top() == 'A') pCnt = 0;
-
-            stk.push(s[i]);
+            if(pCnt < 2) pCnt = 0; // A 등장 전에 P가 2번 미만으로 나옴 => 불가능
+            else if(!stk.empty() && stk.top() == 'A') pCnt = 0; // A 전에 A가 나옴 => 불가능
         }
+
+        stk.push(s[i]);
         
     }
 
@@ -78,10 +48,8 @@ int main()
 
     reverse(ans.begin(), ans.end());
 
-    // cout << "ans: " << ans << "\n";
     if(ans == "PPAP" || ans == "P") cout << "PPAP\n";
     else cout << "NP\n";
-
     
     return 0;
 }
