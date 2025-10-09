@@ -3,37 +3,37 @@
 using namespace std;
 
 int d;
-string s;
-string ans;
+string s; // 시작 문자열
+string ans; // 정답 문자열
 
-unordered_set<string> dict; // 사전에 있는 단어들
+vector<string> dict; // 사전
+unordered_set<string> reachable; // 도달 가능한 문자열
 
-void BFS()
+bool cmp(string A, string B)
 {
-    queue<string> q;
-    q.push(s);
-    dict.erase(s); // 방문 확인 표시
+    return (int)A.length() < (int)B.length();
+}
 
-    while(!q.empty())
+void findAns()
+{
+    sort(dict.begin(), dict.end(), cmp); // 사전 길이 오름차순으로 정렬
+
+    reachable.insert(s); // 시작 문자열은 무조건 도달 가능
+
+    for(auto word : dict)
     {
-        string cur = q.front();
-        q.pop();
-
-        for(int i = 0; i <= (int)cur.length(); i++)
+        for(int i = 0; i < (int)word.length(); i++)
         {
-            for(char j = 'a'; j <= 'z'; j++)
+            // 현재 단어보다 한 글자 짧은 단어 중 도달 가능한 단어 있는지 확인하기
+            string shorter = word.substr(0, i) + word.substr(i + 1);
+
+            // 짧은 단어가 도달 가능 => 현재 단어도 도달 가능
+            if(reachable.find(shorter) != reachable.end())
             {
-                string nxt = cur;
-                string tmp = "";
-                tmp += j;
-                nxt.insert(i, tmp);
+                reachable.insert(word);
 
-                if(dict.count(nxt) == 0) continue;
-                
-                q.push(nxt);
-                dict.erase(nxt);
-
-                if((int)ans.length() < (int)nxt.length()) ans = nxt;
+                if((int)ans.length() < (int)word.length()) ans = word;
+                break;
             }
         }
     }
@@ -52,10 +52,10 @@ int main()
         string word;
         cin >> word;
 
-        dict.insert(word);
+        dict.push_back(word);
     }
 
-    BFS();
+    findAns();
 
     cout << ans << "\n";
 
