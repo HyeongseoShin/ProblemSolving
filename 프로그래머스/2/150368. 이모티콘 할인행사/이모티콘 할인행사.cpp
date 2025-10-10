@@ -6,13 +6,8 @@ using namespace std;
 
 int n, m;
 
-int percentage[4] = {40, 30, 20, 10};
-
 int maxPerson = -1;
 int maxMoney = -1;
-
-vector<vector<int>> customers;
-vector<int> emo;
 
 void getMaxPersonAndMoney(vector<vector<int>> users, vector<int> emoticons, vector<int> discount)
 {
@@ -48,19 +43,14 @@ void getAns(int cur, vector<vector<int>> users, vector<int> emoticons, vector<in
     if(cur == m)
     {
         getMaxPersonAndMoney(users, emoticons, discount);
-        // for(int i = 0; i < m; i++)
-        // {
-        //     cout << disCount[i] << " ";
-        // }
-        // cout << "\n";
         return;
     }
     
     for(int i = cur; i < m; i++)
     {
-        for(int j = 0; j < 4; j++)
+        for(int j = 1; j <= 4; j++)
         {
-            discount[i] = percentage[j];
+            discount[i] = 10 * j;
             getAns(i+1, users, emoticons, discount);
         }
     }
@@ -77,7 +67,6 @@ vector<int> solution(vector<vector<int>> users, vector<int> emoticons) {
     
     getAns(0, users, emoticons, discount);
     
-    // cout << maxPerson << " " << maxMoney << "\n";
     ans.push_back(maxPerson);
     ans.push_back(maxMoney);
     
