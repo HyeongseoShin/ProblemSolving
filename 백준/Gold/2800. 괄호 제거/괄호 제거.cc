@@ -39,13 +39,11 @@ void GetAns(int cur)
         return;
     }
 
-    for(int i = cur; i < (int)v.size(); i++)
-    {
-        isDeleted[i] = true;
-        GetAns(i+1);
-        isDeleted[i] = false;
-        GetAns(i+1);
-    }
+    isDeleted[cur] = true;
+    GetAns(cur+1);
+    
+    isDeleted[cur] = false;
+    GetAns(cur+1);
 }
 
 int main()
