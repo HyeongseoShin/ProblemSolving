@@ -56,26 +56,11 @@ int GetMin()
     return ret;
 }
 
-void printBoard()
-{
-    cout << "\n";
-    for(int i = 1; i <= n; i++)
-    {
-        for(int j = 1; j <= m; j++)
-        {
-            cout << board[i][j] << " ";
-        }
-        cout << "\n";
-    }
-    cout << "\n";
-}
-
 void GetAns(int cur)
 {
     if(cur == k)
     {
         ans = min(ans, GetMin());
-        // cout << "\n";
         return ;
     }
 
@@ -89,8 +74,6 @@ void GetAns(int cur)
         memcpy(tmp, board, sizeof(board));
 
         rotate(r, c, s);
-
-        // printBoard();
 
         GetAns(cur + 1);
 
