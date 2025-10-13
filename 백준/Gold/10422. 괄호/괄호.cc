@@ -22,7 +22,8 @@ int main()
     {
         for(int j = 0; j <= i - 2; j += 2)
         {
-            dp[i] = (dp[i] + dp[j] * dp[i - 2 - j]) % MOD;
+            dp[i] += dp[j] * dp[i - 2 - j];
+            dp[i] %= MOD;
         }
     }
 
