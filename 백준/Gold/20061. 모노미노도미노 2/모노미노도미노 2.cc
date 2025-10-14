@@ -62,7 +62,6 @@ void dropG(int x, int y, int lX, int lY, int num)
             {
                 if(green[i][j] != 0)
                 {
-                    // cout << "green i: " << i << " j: " << j << "\n";
                     isPossible = false;
                     break;
                 }
@@ -89,6 +88,7 @@ void dropG(int x, int y, int lX, int lY, int num)
     
 }
 
+// 파랑 타일 떨어뜨림
 void dropB(int x, int y, int lX, int lY, int num)
 {
     int dropX = x;
@@ -107,7 +107,6 @@ void dropB(int x, int y, int lX, int lY, int num)
             {
                 if(blue[i][j] != 0)
                 {
-                    // cout << "blue i: " << i << " j: " << j << "\n";
                     isPossible = false;
                     break;
                 }
@@ -146,6 +145,7 @@ void dropG(int x)
     }
 }
 
+// 초록 보드에서 가득찬 행 있으면 떨구기
 void deleteFullG()
 {
     for(int i = 0; i < 6; i++)
@@ -184,6 +184,7 @@ void dropB(int y)
     }
 }
 
+// 파랑 보드에서 가득찬 열 있으면 떨구기
 void deleteFullB()
 {
     for(int i = 0; i < 6; i++)
@@ -209,6 +210,7 @@ void deleteFullB()
     }
 }
 
+// 초록 연한 부분에 블록 있는지 확인 후 삭제 후 떨구기
 void deleteSoftG()
 {
     int cnt = 0;
@@ -224,7 +226,7 @@ void deleteSoftG()
         }
     }
 
-    if(cnt == 0) return;
+    if(cnt == 0) return; // 연한 부분에 블록 없으면 패스
 
     for(int i = 5; i >= 2; i--)
     {
@@ -237,6 +239,7 @@ void deleteSoftG()
     }
 }
 
+// 파랑 연한 부분에 블록 있는지 확인 후 삭제 후 떨구기
 void deleteSoftB()
 {
     int cnt = 0;
@@ -252,7 +255,7 @@ void deleteSoftB()
         }
     }
 
-    if(cnt == 0) return;
+    if(cnt == 0) return; // 연한 부분에 블록 없으면 떨구기
 
     for(int i = 0; i < 4; i++)
     {
@@ -263,8 +266,6 @@ void deleteSoftB()
         }
     }
 }
-
-
 
 int main()
 {
@@ -281,31 +282,16 @@ int main()
         // 초록색, 파란색 타일 설치
         if(t == 1)
         {
-            // green[0][y] = num;
-            // blue[x][0] = num;
-
             lX = 0;
             lY = 0;
         }
         else if(t == 2) // 가로
         {
-            // green[0][y] = num;
-            // green[0][y+1] = num;
-
-            // blue[x][0] = num;
-            // blue[x][1] = num;
-
             lX = 0;
             lY = 1;
         }
         else if(t == 3) // 세로
         {
-            // green[0][y] = num;
-            // green[1][y] = num;
-
-            // blue[x][0] = num;
-            // blue[x+1][0] = num;
-
             lX = 1;
             lY = 0;
         }
@@ -316,19 +302,11 @@ int main()
         deleteFullG(); // 초록색 보드에서 행 가득차면 삭제
         deleteFullB(); // 파란색 보드에서 열 가득차면 삭제
 
-        // printBoard();
-
         deleteSoftG(); // 초록색 보드의 연한 행 개수에 따라 블록 삭제
         deleteSoftB(); // 초록색 보드의 연한 행 개수에 따라 블록 삭제
 
-        // printBoard();
-
-        
-
         num++; // 블록 번호++
     }
-
-    // printBoard();
 
     int ans = 0;
     for(int i = 0; i < 6; i++)
