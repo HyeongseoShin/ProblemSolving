@@ -39,7 +39,7 @@ void rotate(int x, int d, int k)
 
 void deleteNearNum()
 {
-    vector<pair<int, int>> delPos;
+    set<pair<int, int>> delPos;
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < m; j++)
@@ -58,14 +58,14 @@ void deleteNearNum()
 
                 if(board[i][j] == board[nX][nY])
                 {
-                    delPos.push_back({nX, nY});
+                    delPos.insert({nX, nY});
                     isDeleted = true;
                 }
             }
 
             if(isDeleted)
             {
-                delPos.push_back({i, j});
+                delPos.insert({i, j});
             }
         }
     }
