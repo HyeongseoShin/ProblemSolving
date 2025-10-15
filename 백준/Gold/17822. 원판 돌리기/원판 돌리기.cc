@@ -12,20 +12,6 @@ int ans = 0;
 int dx[4] = {-1, 1, 0, 0};
 int dy[4] = {0, 0, -1, 1};
 
-void printBoard()
-{
-    cout << "\n\n";
-    for(int i = 0; i < n; i++)
-    {
-        for(int j = 0; j < m; j++)
-        {
-            cout << board[i][j] << " ";
-        }
-        cout << "\n";
-    }
-    cout << "\n";
-}
-
 // d : 0 => 시계 방향
 // d : 1 => 반시계 방향
 void rotate(int x, int d, int k)
@@ -59,6 +45,7 @@ void deleteNearNum()
         for(int j = 0; j < m; j++)
         {
             bool isDeleted = false;
+
             // 삭제된 수이면 패스
             if(board[i][j] == 0) continue;
 
@@ -71,7 +58,6 @@ void deleteNearNum()
 
                 if(board[i][j] == board[nX][nY])
                 {
-                    // cout << "i: " << i << " j: " << j << " nX: " << nX << " nY: " << nY << "\n";
                     delPos.push_back({nX, nY});
                     isDeleted = true;
                 }
@@ -84,18 +70,18 @@ void deleteNearNum()
         }
     }
 
+    // 삭제되어야 할 수 삭제
     if((int)delPos.size() > 0)
     {
         for(auto [i, j] : delPos)
         {
-            // cout << "i: " << i << " j: " << j << "\n";
             board[i][j] = 0;
         }
 
         return;
     }
     
-
+    // 삭제해야 할 수 없다면 평균 구하기
     double avg = 0.0;
     int sum = 0;
     int cnt = 0;
@@ -112,8 +98,9 @@ void deleteNearNum()
     }
     
 
+    // 평균보다 큰 수--, 작은 수++
     avg = (double)sum / (double)cnt;
-    // cout << "avg: " << avg << "\n";
+
     for(int i = 0; i < n; i++)
     {
         for(int j = 0; j < m; j++)
@@ -126,6 +113,7 @@ void deleteNearNum()
         }
     }
 }
+
 int main()
 {
     ios::sync_with_stdio(0);
@@ -141,26 +129,19 @@ int main()
         }
     }
 
-    // printBoard();
-
     while(t--)
     {
         int x, d, k;
         
         cin >> x >> d >> k;
 
+        // 0부터 시작해서 x만큼 ++ 하면 0부터 시작해도 x의 배수인 원판만 회전 가능
         for(int i = 0 + (x - 1); i < n; i += x)
         {
             rotate(i, d, k);
         }
 
-        // cout << "after rotate\n";
-        // printBoard();
-        
-        deleteNearNum();
-
-        // cout << "after delete\n";
-        // printBoard();
+        deleteNearNum(); // 인접한 수 있는지 확인 후 삭제
     }
 
     for(int i = 0; i < n; i++)
