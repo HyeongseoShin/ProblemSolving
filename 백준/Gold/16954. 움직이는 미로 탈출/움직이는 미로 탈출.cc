@@ -7,6 +7,8 @@ string board[8];
 int dx[9] = {0, -1, -1, 0, 1, 1, 1, 0, -1};
 int dy[9] = {0, 0, 1, 1, 1, 0, -1, -1, -1};
 
+int wallCnt = 0; // 현재 벽 개수
+
 void printBoard()
 {
     cout << "\n";
@@ -22,8 +24,9 @@ void printBoard()
 }
 
 // 벽 이동
-void moveWall()
+int moveWall()
 {
+    int ret = 0;
     for(int i = 7; i >= 0; i--)
     {
         for(int j = 0; j < 8; j++)
@@ -36,10 +39,13 @@ void moveWall()
                 {
                     board[i][j] = '.';
                     board[i+1][j] = '#';
+                    ret++;
                 }
             }
         }
     }
+
+    return ret;
 }
 
 int BFS()
@@ -51,6 +57,8 @@ int BFS()
     while(!q.empty())
     {
         int sz = (int)q.size();
+
+        if(wallCnt == 0) return 1;
 
         while(sz--)
         {
@@ -74,7 +82,7 @@ int BFS()
             }
         }
 
-        moveWall();
+        wallCnt = moveWall();
     }
 
     return 0;
@@ -85,7 +93,15 @@ int main()
     ios::sync_with_stdio(0);
     cin.tie(0);
 
-    for(int i = 0; i < 8; i++) cin >> board[i];
+    for(int i = 0; i < 8; i++)
+    {
+        cin >> board[i];
+
+        for(int j = 0; j < 8; j++)
+        {
+            if(board[i][j] == '#') wallCnt++;
+        }
+    }
 
     cout << BFS() << "\n";
 
