@@ -41,10 +41,8 @@ int Dijkstra(int x)
     int ret = 0;
     for(int i = 1; i <= n; i++)
     {
-        // cout << dist[i] << " ";
         if(dist[i] <= m) ret += itemCnt[i];
     }
-    // cout << "\n";
     
     return ret;
 }
@@ -74,9 +72,6 @@ int main()
     for(int i = 1; i <= n; i++)
     {
         ans = max(ans, Dijkstra(i));
-        // cout << BFS(i) << "\n";
-        // cout << "i: " << i << " 결과: " << BFS(i) << "\n";
-        // cout << "=======================\n";
     }
 
     cout << ans << "\n";
