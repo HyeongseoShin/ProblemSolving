@@ -4,64 +4,59 @@ using namespace std;
 
 int n;
 
-char board[10][10];
-
-vector<pair<int, int>> tPos;
-vector<pair<int, int>> oPos;
+char board[7][7];
 
 int dx[4] = {-1, 1, 0, 0};
 int dy[4] = {0, 0, -1, 1};
 
-bool isPossible = false;
+vector<pair<int, int>> tPos; // 선생 위치
+vector<pair<int, int>> xPos; // 빈 칸 위치 (장애물 설치 후보)
 
-// 선생이 학생 볼 수 있는지 검사
-bool Check()
+bool isPossible()
 {
-    for(int k = 0; k < (int)tPos.size(); k++)
+    for(auto [x, y] : tPos)
     {
-        auto [curX, curY] = tPos[k];
-
         for(int dir = 0; dir < 4; dir++)
         {
-            int nX = curX;
-            int nY = curY;
+            int nX = x;
+            int nY = y;
 
-            while(nX >= 0 && nX < n && nY >= 0 && nY < n)
+            while(true)
             {
-                nX = nX + dx[dir];
-                nY = nY + dy[dir];
+                nX += dx[dir];
+                nY += dy[dir];
 
+                if(nX < 0 || nX >= n || nY < 0 || nY >= n) break;
                 if(board[nX][nY] == 'O') break;
                 if(board[nX][nY] == 'S') return false;
             }
         }
     }
-    
 
     return true;
 }
 
-void SetObstacles(int idx, int cnt)
+// 백트래킹
+void getAns(int idx, int cnt)
 {
-    // 장애물 3개 설치했으면 끝
     if(cnt == 3)
-    {        
-        // 검사
-        isPossible = Check();
+    {
+        if(isPossible())
+        {
+            cout << "YES\n";
+            exit(0);
+        }
+
         return;
     }
 
-    for(int k = idx; k < (int)oPos.size(); k++)
+    for(int i = idx; i < (int)xPos.size(); i++)
     {
-        if(isPossible) return;
+        auto [x, y] = xPos[i];
 
-        auto [curX, curY] = oPos[k];
-
-        board[curX][curY] = 'O';
-
-        SetObstacles(k + 1, cnt + 1);
-
-        board[curX][curY] = 'X';
+        board[x][y] = 'O';
+        getAns(i+1, cnt+1);
+        board[x][y] = 'X';
     }
 }
 
@@ -78,16 +73,14 @@ int main()
         {
             cin >> board[i][j];
 
-            if(board[i][j] == 'X') oPos.push_back({i, j});
             if(board[i][j] == 'T') tPos.push_back({i, j});
+            else if(board[i][j] == 'X') xPos.push_back({i, j});
         }
     }
 
-    SetObstacles(0, 0);
+    getAns(0, 0);
 
-    if(isPossible) cout << "YES\n";
-    else cout << "NO\n";
+    cout << "NO\n";
 
     return 0;
-
 }
