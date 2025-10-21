@@ -11,9 +11,8 @@ int board[1001][1001];
 // 1 : 밤
 int dist[1001][1001][11][2];
 
-// 가만히 있는 것도 선택지에 있음
-int dx[5] = {0, -1, 1, 0, 0};
-int dy[5] = {0, 0, 0, -1, 1};
+int dx[4] = {-1, 1, 0, 0};
+int dy[4] = {0, 0, -1, 1};
 
 int ans = INT_MAX;
 
@@ -38,7 +37,7 @@ void BFS()
             return;
         }
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 4; i++)
         {
             int nX = curX + dx[i];
             int nY = curY + dy[i];
