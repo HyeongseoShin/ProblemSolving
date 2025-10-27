@@ -7,7 +7,7 @@ int tc;
 int n, d, c; // 컴퓨터 개수, 의존성 개수, 해킹당한 컴퓨터 번호
 
 vector<pair<int, int>> adj[MAX]; // <감염 시간, 컴퓨터 번호>
-int dist[MAX];
+int dist[MAX]; // dist[i] : i가 감염되는 최단 시간
 
 void Dijkstra(int x)
 {
@@ -62,6 +62,7 @@ int main()
         int cnt = 0;
         int idx = c;
         
+        // 감염된 컴퓨터 수, 가장 마지막에 감염된 컴퓨터 감염 시간 구하기
         for(int i = 1; i <= n; i++)
         {
             if(dist[i] != INT_MAX)
@@ -74,8 +75,6 @@ int main()
         cout << cnt << " " << dist[idx] << "\n";
         
     }
-
-    
 
     return 0;
 }
