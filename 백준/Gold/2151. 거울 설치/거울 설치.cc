@@ -9,8 +9,6 @@ int n;
 // ! : 거울 설치 위치 후보
 char board[51][51];
 
-int ans = INT_MAX;
-
 // 상, 좌, 하, 우
 int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, -1, 0, 1};
@@ -18,6 +16,7 @@ int dy[4] = {0, -1, 0, 1};
 int stX = -1, stY = -1, enX = -1, enY = -1;
 
 int cnt[51][51]; // (x, y) 까지 오는 데에 설치한 최소 거울 개수
+
 
 void Dijkstra(int x, int y)
 {
@@ -60,13 +59,11 @@ void Dijkstra(int x, int y)
             // 거울 설치 X
             pq.push({curCnt, nX, nY, curDir});
 
+            cnt[nX][nY] = curCnt + 1;
             // 거울 설치
             int prevDir = (curDir - 1) % 4;
             if(prevDir < 0) prevDir += 4;
-
             int nxtDir = (curDir + 1) % 4;
-
-            cnt[nX][nY] = curCnt + 1;
             pq.push({curCnt + 1, nX, nY, prevDir});
             pq.push({curCnt + 1, nX, nY, nxtDir});
         }
@@ -113,8 +110,6 @@ int main()
             cnt[i][j] = INT_MAX;
         }
     }
-
-
     Dijkstra(stX, stY);
 
     cout << cnt[enX][enY] << "\n";
