@@ -11,41 +11,39 @@ ll money;
 vector<pair<ll, int>> adj[MAX];
 
 ll dist[MAX];
-ll ans = LLONG_MAX;
+ll ans = -1;
 
-// <거리, 경로 중 수금 최댓값, 위치>
-void Dijkstra()
+// 지나가는 경로가 limit보다 크면 안됨
+bool check(ll limit)
 {
-    priority_queue<tuple<ll, ll, int>, vector<tuple<ll, ll, int>>, greater<>> pq;
-    dist[st] = 0LL;
-    pq.push({dist[st], 0LL, st});
+    vector<ll> dist(n + 1, LLONG_MAX);
+
+    // <현재까지 쓴 돈, 현재 위치
+    priority_queue<tuple<ll, int>, vector<tuple<ll, int>>, greater<>> pq;
+    
+    dist[st] = 0;
+    pq.push({dist[st], st});
 
     while(!pq.empty())
     {
-        auto [curDist, curMoney, cur]  = pq.top();
+        auto [curDist, cur] = pq.top();
         pq.pop();
-
-        // cout << "cur: " << cur << " curDist: " << curDist << " curMoney: " << curMoney << "\n";
-
-        if(cur == en)
-        {
-            ans = min(ans, curMoney);
-            continue;
-        }
 
         if(dist[cur] < curDist) continue;
 
         for(auto [nxtDist, nxt] : adj[cur])
         {
-            if(dist[nxt] > curDist + nxtDist && curDist + nxtDist <= money)
+            if(nxtDist > limit) continue; // 다음 가야할 길이 limit보다 크면 못 감
+            if(dist[nxt] > curDist + nxtDist)
             {
                 dist[nxt] = curDist + nxtDist;
-                ll nxtMoney = max(nxtDist, curMoney);
-
-                pq.push({dist[nxt], nxtMoney, nxt});
+                pq.push({dist[nxt], nxt});
             }
         }
     }
+
+    return dist[en] <= money; // 끝점까지 현재 보유한 돈으로 도착 가능한 지 확인
+
 }
 
 int main()
@@ -66,11 +64,22 @@ int main()
         adj[to].push_back({c, from});
     }
 
-    fill(dist, dist + n + 1, LLONG_MAX);
+    ll l = 0, r = money;
 
-    Dijkstra();
+    // 이분 탐색
+    while(l <= r)
+    {
+        ll mid = (l + r) / 2;
 
-    if(dist[en] == LLONG_MAX) ans = -1;
+        // 매개 변수 : 경로 중 최댓값의 최솟값
+        // 만약 수치심이 mid일 때 현재 보유한 돈으로 시작 ~ 도착점까지 갈 수 있나?? 확인
+        if(check(mid))
+        {
+            ans = mid;
+            r = mid - 1;
+        }
+        else l = mid + 1;
+    }
 
     cout << ans << "\n";
 
