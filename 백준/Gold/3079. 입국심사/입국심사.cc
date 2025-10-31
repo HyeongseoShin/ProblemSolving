@@ -22,9 +22,10 @@ bool isPossible(ll target)
     for(int i = 0; i < n; i++)
     {
         cnt += (target / t[i]);
+        if(cnt >= m) return true;
     }
 
-    return (cnt >= m);
+    return false;
 }
 
 int main()
