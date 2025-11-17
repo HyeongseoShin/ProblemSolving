@@ -6,7 +6,6 @@ using namespace std;
 
 int n;
 
-int pos[MAX]; // 해당 번호 학생의 현재 위치
 int dp[MAX]; // dp[i] : 숫자 i까지 봤을 때 이미 번호 순서대로 올바른 순서로 배치된 수의 개수
 
 int main()
@@ -20,22 +19,12 @@ int main()
     {
         int x;
         cin >> x;
-        
-        pos[x] = i;
+
+        dp[x] = dp[x-1] + 1;
     }
 
-    int ans = 1;
-    dp[1] = 1;
-
-    for(int i = 2; i <= n; i++)
-    {
-        if(pos[i] > pos[i-1]) dp[i] = dp[i-1] + 1;
-        else dp[i] = 1;
-
-        ans = max(ans, dp[i]);
-    }
+    int ans = *max_element(dp + 1, dp + n + 1);
 
     cout << n - ans << "\n";
-
     return 0;
 }
