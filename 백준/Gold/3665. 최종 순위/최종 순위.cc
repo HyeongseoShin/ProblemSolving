@@ -8,7 +8,6 @@ int ranking[501]; // ranking[i] : 작년에 i 순위 차지한 팀의 번호
 
 int num[501]; // 해당 팀의 작년 순위
 int inDegree[501];
-int outDegree[501];
 
 int main()
 {
@@ -26,8 +25,7 @@ int main()
             cin >> ranking[i];
 
             num[ranking[i]] = i;
-            outDegree[ranking[i]] = n - i;
-            inDegree[ranking[i]] = (n - 1) - outDegree[ranking[i]];
+            inDegree[ranking[i]] = i - 1;
         }
 
         cin >> m;
@@ -39,40 +37,35 @@ int main()
 
             if(num[x] < num[y])
             {
-                outDegree[x]--;
                 inDegree[x]++;
-
-                outDegree[y]++;
                 inDegree[y]--;
             }
 
             else
             {
-                outDegree[x]++;
                 inDegree[x]--;
-
-                outDegree[y]--;
                 inDegree[y]++;
             }
         }
 
-        set<int> outSet;
+        set<int> inDegreeSet;
 
-        // <outDegree, 팀번호>
+        // <inDegree, 팀번호>
         vector<pair<int, int>> v;
         bool isPossible = true;
+
         for(int i = 1; i <= n; i++)
         {
             int cur = ranking[i];
 
-            if(outSet.count(outDegree[cur]) > 0)
+            if(inDegreeSet.count(inDegree[cur]) > 0)
             {
                 isPossible = false;
                 break;
             }
 
-            v.push_back({outDegree[cur], cur});
-            outSet.insert(outDegree[cur]);
+            v.push_back({inDegree[cur], cur});
+            inDegreeSet.insert(inDegree[cur]);
         }
 
         if(!isPossible)
@@ -81,7 +74,7 @@ int main()
             continue;
         }
 
-        sort(v.begin(), v.end(), greater<>());
+        sort(v.begin(), v.end());
 
         for(int i = 0; i < (int)v.size(); i++)
         {
