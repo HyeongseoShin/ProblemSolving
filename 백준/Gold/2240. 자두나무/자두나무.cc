@@ -32,7 +32,7 @@ int main()
         if(order[i] == 1) dp[i][0]++;
 
         // 움직이는 횟수 확인
-        for(int j = 1; j <= w && j <= i; j++)
+        for(int j = 1; j <= i && j <= w; j++)
         {
             dp[i][j] = max(dp[i-1][j], dp[i-1][j-1]);
 
