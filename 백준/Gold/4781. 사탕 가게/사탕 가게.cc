@@ -42,12 +42,9 @@ int main()
             auto [curC, curP] = candy[i];
 
             // 현재 쓸 수 있는 돈이 j일 때
-            for(int j = 1; j <= money; j++)
+            for(int j = curP; j <= money; j++)
             {
-                if(curP <= j)
-                {
-                    dp[j] = max(dp[j], dp[j - curP] + curC);
-                }
+                dp[j] = max(dp[j], dp[j - curP] + curC);
             }
         }
 
