@@ -11,6 +11,9 @@ bool vis[1005];
 
 int dfs(int cur)
 {
+    // 리프 노드일 때
+    if(dynamite[cur].size() == 1 && cur != 1) return INT_MAX;
+
     vis[cur] = true;
 
     int sum = 0;
@@ -18,15 +21,10 @@ int dfs(int cur)
     {
         if(vis[nxt]) continue;
 
-        int nxtVal = dfs(nxt);
-
-        nxtVal = min(nxtVal, cnt);
-
-        sum += nxtVal;
+        sum += min(dfs(nxt), cnt);
     }
 
-    return (sum == 0 ? INT_MAX : sum);
-    
+    return sum;
     
 }
 
@@ -56,7 +54,7 @@ int main()
             dynamite[b].push_back({d, a});
         }
 
-        cout << (n == 1 ? 0 : dfs(1)) << "\n";
+        cout << dfs(1) << "\n";
     }
 
     return 0;
