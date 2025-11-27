@@ -19,24 +19,15 @@ ll dfs(int cur)
 {
     vis[cur] = true;
 
-    vector<ll> v;
+    ll sum = weights[cur];
 
     for(auto nxt : adj[cur])
     {
         if(vis[nxt]) continue;
-        v.push_back(dfs(nxt));
+        sum = max(sum, sum + dfs(nxt));
     }
 
-    int sz = (int)v.size();
-
-    ll sum = 0LL;
-
-    for(int i = 0; i < sz; i++)
-    {
-        sum = max(sum, sum + v[i]);
-    }
-
-    return sum + weights[cur];
+    return sum;
 }
 
 int main()
