@@ -4,59 +4,101 @@ using namespace std;
 
 int n, m;
 
-int board[10][10];
-bool isUsed[10][10];
+int board[7][7];
 
-int dx[4] = {-1, 0, 1, 0};
-int dy[4] = {0, 1, 0, -1};
+bool isUsed[7][7];
 
 int ans = 0;
 
-void GetAns(int x, int y, int cur)
+// 범위 밖인지 확인
+bool isPossible(int x, int y)
 {
-    if(y == m)
-    {
-        x++;
-        y = 0;
-    }
+    if(x < 0 || x >= n || y < 0 || y >= m) return false;
+    if(isUsed[x][y]) return false;
 
-    if(x == n)
+    return true;
+}
+
+// 상, 하, 좌, 우
+int dx[4] = {-1, 1, 0, 0};
+int dy[4] = {0, 0, -1, 1};
+
+// ㄱ자 만들 수 있는 좌표 위치
+int dir[4][2] = {
+    {0, 2},
+    {0, 3},
+    {1, 2},
+    {1, 3}
+};
+
+void dfs(int x, int y, int sum)
+{
+    bool tmpIsUsed[7][7];
+    memcpy(tmpIsUsed, isUsed, sizeof(tmpIsUsed));
+
+    if(x >= n)
     {
-        ans = max(ans, cur);
+        ans = max(ans, sum);
         return;
     }
 
+    // 아직 사용안됐으면
     if(!isUsed[x][y])
     {
         for(int i = 0; i < 4; i++)
         {
-            int nX1 = x + dx[i];
-            int nY1 = y + dy[i];
-
-            int nX2 = x + dx[(i + 1) % 4];
-            int nY2 = y + dy[(i + 1) % 4];
-
-            if(nX1 < 0 || nX1 >= n || nY1 < 0 || nY1 >= m) continue;
-            if(isUsed[nX1][nY1]) continue;
-
-            if(nX2 < 0 || nX2 >= n || nY2 < 0 || nY2 >= m) continue;
-            if(isUsed[nX2][nY2]) continue;
-
+            int tmp = 0;
+            bool can = true;
             isUsed[x][y] = true;
-            isUsed[nX1][nY1] = true;
-            isUsed[nX2][nY2] = true;
 
-            GetAns(x, y + 1, cur + board[x][y] * 2 + board[nX1][nY1] + board[nX2][nY2]);
+            for(int j = 0; j < 2; j++)
+            {
+                int curDir = dir[i][j];
+                int nX = x + dx[curDir];
+                int nY = y + dy[curDir];
 
-            isUsed[x][y] = false;
-            isUsed[nX1][nY1] = false;
-            isUsed[nX2][nY2] = false;
+                if(!isPossible(nX, nY))
+                {
+                    can = false;
+                    break;
+                }
 
+                isUsed[nX][nY] = true;
+                tmp += board[nX][nY];
+            }
+
+            int tmpX = x;
+            int tmpY = y;
+            tmpY++;
+
+            if(tmpY >= m)
+            {
+                tmpX++;
+                tmpY = 0;
+            }
+
+            if(can)
+            {
+                // cout << "x: " << x << " y: " << y << " 계산값: " << board[x][y] * 2 + tmp << "\n";
+                dfs(tmpX, tmpY, sum + board[x][y] * 2 + tmp);
+            }
+
+            memcpy(isUsed, tmpIsUsed, sizeof(isUsed));
         }
     }
-    
 
-    GetAns(x, y + 1, cur);
+    int nX = x;
+    int nY = y;
+
+    nY++;
+
+    if(nY >= m)
+    {
+        nX++;
+        nY = 0;
+    }
+
+    dfs(nX, nY, sum);
 }
 
 int main()
@@ -74,10 +116,9 @@ int main()
         }
     }
 
-    GetAns(0, 0, 0);
+    dfs(0, 0, 0);
 
     cout << ans << "\n";
-
 
     return 0;
 }
