@@ -2,17 +2,18 @@
 
 using namespace std;
 
-int n, r, c;
-
+int r, c, n, h;
 char board[101][101];
-
 bool vis[101][101];
 
-int dx[4] = {-1, 1, 0, 0};
-int dy[4] = {0, 0, -1, 1};
+// 좌, 우, 상, 하
+int dx[4] = {0, 0, -1, 1};
+int dy[4] = {-1, 1, 0, 0};
 
+// 정답 출력
 void printBoard()
 {
+    // cout << "\n===================\n";
     for(int i = 0; i < r; i++)
     {
         for(int j = 0; j < c; j++)
@@ -21,26 +22,57 @@ void printBoard()
         }
         cout << "\n";
     }
+    // cout << "\n";
 }
 
-// 공중에 있는 클러스터가 떨어졌으면 true
-int BFS(int x, int y)
+// 왼쪽에서 던지기
+void fromLeft(int height)
 {
-    vis[x][y] = true;
+    for(int i = 0; i < c; i++)
+    {
+        if(board[height][i] == 'x')
+        {
+            board[height][i] = '.';
+            return;
+        }
+    }
+}
 
+// 오른쪽에서 던지기
+void fromRight(int height)
+{
+    for(int i = c-1; i >= 0; i--)
+    {
+        if(board[height][i] == 'x')
+        {
+            board[height][i] = '.';
+            return;
+        }
+    }
+}
+
+// 클러스터 떨어져있으면 떨구기
+bool drop(int x, int y)
+{
     queue<pair<int, int>> q;
     q.push({x, y});
 
-    bool isAir = true; // 현재 클러스터가 공중에 떠있는지
-    int maxX = x; // 현재 클러스터에서 가장 아래에 있는 지점의 x좌표
+    vis[x][y] = true;
 
-    vector<pair<int, int>> pos; // 지나온 경로
-    pos.push_back({x, y});
+    int maxX = 0;
 
+    bool isAir = true;
+
+    vector<pair<int,int>> path;
     while(!q.empty())
     {
         auto [curX, curY] = q.front();
+        maxX = max(maxX, curX); // 현재 클러스터의 가장 바닥 좌표 구하기
+        path.push_back({curX, curY}); // 지나온 경로 저장
         q.pop();
+
+        // 땅에 붙어있으면 공중에 없음
+        if(curX == r - 1) isAir = false;
 
         for(int i = 0; i < 4; i++)
         {
@@ -51,34 +83,28 @@ int BFS(int x, int y)
             if(board[nX][nY] == '.') continue;
             if(vis[nX][nY]) continue;
 
-            // 바닥에 닿는 부분이 있으면 공중에 있는 게 아님
-            if(nX == r-1) isAir = false;
-
-            maxX = max(maxX, nX); // 현재 클러스터 중 바닥 X 좌표 업데이트
-            pos.push_back({nX, nY}); // 경로 저장
-
             vis[nX][nY] = true;
             q.push({nX, nY});
         }
     }
 
-    // 공중에 떠 있지 않으면 끝
     if(!isAir) return false;
 
-    // 공중에 떠있는 클러스터 빈 칸으로 변경
-    for(auto [pX, pY] : pos)
+    // 공중에 떠있는 클러스터 떨구기
+    // 일단 다 빈칸으로 만들기
+    for(auto [curX, curY] : path)
     {
-        board[pX][pY] = '.';
+        board[curX][curY] = '.';
     }
 
-    // 한 칸씩 내려가보며 클러스터 떨어질 위치 찾기
-    int idx = 1;
-    while(maxX + idx < r)
+    // 한 칸씩 내려가면서 검사할 값
+    int curH = 1;
+    while(maxX + curH < r)
     {
         bool isPossible = true;
-        for(auto [pX, pY] : pos)
+        for(auto [curX , curY] : path)
         {
-            if(board[pX + idx][pY] == 'x')
+            if(board[curX+curH][curY] == 'x')
             {
                 isPossible = false;
                 break;
@@ -86,23 +112,23 @@ int BFS(int x, int y)
         }
 
         if(!isPossible) break;
-        idx++;
+        curH++;
     }
 
-    idx--; // 현재 idx에는 설치 못하므로 한 칸 위로
+    curH--;
 
-    // 클러스터 떨구기
-    for(auto [pX, pY] : pos)
+    // cout << "curH: " << curH << " maxX: " << maxX << "\n";
+    // 최종으로 떨구기
+    for(auto [curX, curY] : path)
     {
-        // cout << "pX: " << pX << " idx: " << idx << "\n";
-        board[pX + idx][pY] = 'x';
+        board[curX + curH][curY] = 'x';
     }
 
     return true;
 }
 
-// 미네랄 클러스터 떨구기
-void drop()
+// 떨어진 클러스터 찾기
+void findCluster()
 {
     memset(vis, false, sizeof(vis));
 
@@ -110,13 +136,11 @@ void drop()
     {
         for(int j = 0; j < c; j++)
         {
-            if(board[i][j] == '.') continue; // 빈 칸이면 패스
-            if(vis[i][j]) continue; // 방문했으면 패스
-            
-            // cout << i << " " << j << "에서 시작\n";
-
-            // 문제에서 2개 이상의 클러스터가 떨어지는 일은 없으므로 하나만 떨어지면 함수 종료
-            if(BFS(i, j)) return;
+            if(board[i][j] == 'x' && !vis[i][j])
+            {
+                // 클러스터 하나 떨구면 끝
+                if(drop(i, j)) return;
+            }
         }
     }
 }
@@ -140,55 +164,18 @@ int main()
     }
 
     cin >> n;
-
-    // 헤맨 부분
-    // 한 높이에 대해 좌, 우 한 번씩 던지는 게 아니라
-    // 각 높이에 대해 좌 던질 차례, 우 던질 차례 나눠져 있는 거임
-    for(int i = 0; i < n; i++)
-    { 
-        int h;
+    for(int order = 0; order < n; order++)
+    {
         cin >> h;
+        h = r - h; // 높이 형식에 맞춤
 
-        // 좌표 변환
-        int newH = r - h;
+        if(order % 2 == 0) fromLeft(h); // 왼쪽에서 던지기
+        else fromRight(h);
 
-        // 왼쪽에서 던질 차례
-        if(i % 2 == 0)
-        {
-            for(int j = 0; j < c; j++)
-            {
-                if(board[newH][j] == 'x')
-                {
-                    board[newH][j] = '.';
-                    break;
-                }
-            }
-        }
-
-        // 오른쪽에서 던질 차례
-        else
-        {
-            for(int j = c - 1; j >= 0; j--)
-            {
-                if(board[newH][j] == 'x')
-                {
-                    board[newH][j] = '.';
-                    break;
-                }
-            }
-        }
-
-        // cout << "막대 던진 후 h: " << h << " newH: " << newH << "\n";
-        // printBoard();
-
-        drop();
-
-        // cout << "떨군 후\n";
-        // printBoard();
+        findCluster(); // 클러스터 찾기
     }
 
     printBoard();
 
     return 0;
 }
-
