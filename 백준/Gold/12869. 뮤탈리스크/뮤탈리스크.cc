@@ -11,41 +11,38 @@ int atk[6][3] = {{9, 3, 1}, {9, 1, 3}, {3, 1, 9}, {3, 9, 1}, {1, 3, 9}, {1, 9, 3
 
 int ans = INT_MAX;
 
-int vis[61][61][61];
+int dist[61][61][61];
 
 void bfs()
 {
-    vis[scv[0]][scv[1]][scv[2]] = true;
+    memset(dist, -1, sizeof(dist));
+    dist[scv[0]][scv[1]][scv[2]] = 0;
 
-    queue<pair<int, vector<int>>> q;
-    q.push({0, {scv[0], scv[1], scv[2]}});
+    queue<tuple<int, int, int>> q;
+    q.push({scv[0], scv[1], scv[2]});
 
     while(!q.empty())
     {
-        auto [cnt, curV] = q.front();
+        auto [a, b, c] = q.front();
         q.pop();
 
-        if(curV[0] == 0 && curV[1] == 0 && curV[2] == 0)
+        if(a == 0 && b == 0 && c == 0)
         {
-            ans = cnt;
+            ans = dist[a][b][c];
             return;
         }
 
         for(int i = 0; i < 6; i++)
         {
-            vector<int> tmp;
-            tmp = curV;
-            for(int j = 0; j < 3; j++)
-            {
-                tmp[j] -= atk[i][j];
-                if(tmp[j] < 0) tmp[j] = 0;
-            }
+            int nA = max(0, a - atk[i][0]);
+            int nB = max(0, b - atk[i][1]);
+            int nC = max(0, c - atk[i][2]);
 
-            if(vis[tmp[0]][tmp[1]][tmp[2]]) continue;
+            if(dist[nA][nB][nC] > -1) continue;
 
-            vis[tmp[0]][tmp[1]][tmp[2]] = true;
+            dist[nA][nB][nC] = dist[a][b][c] + 1;
 
-            q.push({cnt+1, tmp});
+            q.push({nA, nB, nC});
         }
     }
 
