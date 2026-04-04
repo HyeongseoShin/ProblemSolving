@@ -1,48 +1,51 @@
-// https://www.acmicpc.net/problem/13549
 #include <bits/stdc++.h>
 
 using namespace std;
 
+#define MAX 100001
+
 int n, k;
-int dist[100010];
+int dist[MAX];
 
-void BFS(int x)
+int bfs()
 {
+    fill(dist, dist + MAX, INT_MAX);
+    dist[n] = 0;
+
     queue<int> q;
-
-    dist[x] = 0;
-    q.push(x);
-
-    if(x == k) return;
+    q.push(n);
 
     while(!q.empty())
     {
         int cur = q.front();
         q.pop();
 
-        // cout << cur << "\n";
-
         if(cur == k) break;
 
-        if(cur*2 < 100010 && dist[cur*2] == -1)
+        int nxt = cur - 1;
+        if(nxt >= 0 && dist[nxt] > dist[cur] + 1)
         {
-            dist[cur*2] = dist[cur];
-            q.push(cur*2);
+            dist[nxt] = dist[cur] + 1;
+            q.push(nxt);
         }
 
-        if(cur-1 >= 0 && dist[cur-1] == -1)
+        nxt = cur + 1;
+        if(nxt < MAX && dist[nxt] > dist[cur] + 1)
         {
-            dist[cur-1] = dist[cur] + 1;
-            q.push(cur-1);
+            dist[nxt] = dist[cur] + 1;
+            q.push(nxt);
         }
 
-        if(cur+1 < 100010 && dist[cur+1] == -1)
+        nxt = cur * 2;
+        if(nxt >= 0 && nxt < MAX && dist[nxt] > dist[cur])
         {
-            dist[cur+1] = dist[cur] + 1;
-            q.push(cur+1);
+            dist[nxt] = dist[cur];
+            q.push(nxt);
         }
     }
 
+    return dist[k];
+    
 }
 
 int main()
@@ -52,11 +55,9 @@ int main()
 
     cin >> n >> k;
 
-    fill(dist, dist + 100010, -1);
+    int ans = bfs();
 
-    BFS(n);
-
-    cout << dist[k] << "\n";
+    cout << ans << "\n";
 
     return 0;
 }
