@@ -17,7 +17,7 @@ int mcDist[MAX];
 int sbDist[MAX];
 
 // 맥세권 or 스세권인 집 구하기
-void getDist(set<int> &pos, int* dist)
+void getDist(const set<int> &pos, int* dist)
 {
     fill(dist, dist + MAX, 100000001);
 
@@ -87,7 +87,7 @@ int main()
     getDist(sbPos, sbDist);
 
     // 맥세권 & 스세권 중 최단 거리 제일 작은 정답 구하기
-    priority_queue<pair<int, int>, vector<pair<int,int>>, greater<>> pq;
+    int ans = INT_MAX;
 
     for(int i = 1; i <= n; i++)
     {
@@ -99,11 +99,12 @@ int main()
         if(mcDist[i] > mcMax) continue;
         if(sbDist[i] > sbMax) continue;
 
-        pq.push({mcDist[i] + sbDist[i], i});
+        ans = min(ans, mcDist[i] + sbDist[i]);
     }
 
-    if(pq.empty()) cout << "-1\n";
-    else cout << pq.top().first << "\n";
+    if(ans == INT_MAX) ans = -1;
+
+    cout << ans << "\n";
 
     return 0;
 }
