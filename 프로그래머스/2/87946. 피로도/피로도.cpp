@@ -13,11 +13,11 @@ bool vis[10];
 void GetAns(int curStamina, int cnt)
 {
     ans = max(ans, cnt);
-    
+
     for(int i = 0; i < n; i++)
     {
         auto [minStamina, useStamina] = v[i];
-        
+
         if(!vis[i] && curStamina >= minStamina && curStamina - useStamina >= 0)
         {
             vis[i] = true;
@@ -29,13 +29,13 @@ void GetAns(int curStamina, int cnt)
 
 int solution(int k, vector<vector<int>> dungeons) {
     n = (int)dungeons.size();
-    
+
     for(int i = 0; i < n; i++)
     {
         v.push_back({dungeons[i][0], dungeons[i][1]});
     }
-    
+
     GetAns(k, 0);
-    
+
     return ans;
 }
