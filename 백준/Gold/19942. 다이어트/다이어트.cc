@@ -24,6 +24,7 @@ void getAns(int idx, int curP, int curF, int curS, int curV, int curCost)
             // 정답 배열 업데이트
             for(int i = 1; i <= n; i++) ansIdx[i] = isSelected[i];
         }
+        return;
     }
         
     // 범위 넘어서면 끝
