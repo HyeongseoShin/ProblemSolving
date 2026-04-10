@@ -4,107 +4,142 @@ using namespace std;
 
 int n, m, k;
 
-int A[11][11]; // 겨울에 추가될 양분
+// 겨울 양분 추가 값
+int A[11][11];
 
+// 각 위치에 나무 나이
+deque<int> trees[11][11];
 
-// deque은 inde, iterator 모두 접근 가능함!
-// <나무 나이, 생존 여부>
-deque<int> tree[11][11];
+// 각 위치에 있는 양분
+int food[11][11];
 
-int water[11][11]; // 양분 양 : 처음에 모두 5 들어있음
+// 8방향
+int dx[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+int dy[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
 
-// 인접한 8방향
-int dx[8] = {-1, -1, -1, 0, 1, 1, 1, 0};
-int dy[8] = {-1, 0, 1, 1, 1, 0, -1, -1};
+// 디버깅용
+void printTrees()
+{
+    cout << "\n==============Trees Size====================\n";
+    for(int i = 1; i <= n; i++)
+    {
+        for(int j = 1; j <= n; j++)
+        {
+            cout << (int)trees[i][j].size() << " ";
+        }
+        cout << "\n";
+    }
+}
 
-int ans = 0;
+// 디버깅용
+void printFood()
+{
+    cout << "\n==============Food====================\n";
+    for(int i = 1; i <= n; i++)
+    {
+        for(int j = 1; j <= n; j++)
+        {
+            cout << food[i][j] << " ";
+        }
+        cout << "\n";
+    }
+}
 
-// <x, y, 나이>
-queue<tuple<int, int, int>> deadTrees;
-
+// 1. 봄 - 나무가 양분 먹방
+//    여름 - 죽은 나무가 양분으로 변함
 void springAndSummer()
 {
     for(int i = 1; i <= n; i++)
     {
         for(int j = 1; j <= n; j++)
         {
-            int sz = (int)tree[i][j].size();
+            int sz = (int)trees[i][j].size();
+            if(sz == 0) continue; // 나무 없으면 패스
 
-            if(sz == 0) continue;
-
-            deque<int> newTrees;
-
-            int deadWater = 0;
-
-            // 나이가 어린 나무부터 자신의 나이만큼 양분 먹음
-            for(int k = 0; k < sz; k++)
+            deque<int> tmp;
+            int deadFood = 0;
+            for(int l = 0; l < sz; l++)
             {
-                int age = tree[i][j][k];
+                int curAge = trees[i][j][l];
 
-                if(water[i][j] >= age)
-                {
-                    water[i][j] -= age;
-
-                    // 양분 먹으면 나이 + 1
-                    newTrees.push_back(age+1); 
-                }
-
-                // 여름 : 봄에 죽은 나무가 영양분으로 변경됨
+                // 나무 사망하면 양분으로 변함 (여름)
+                if(food[i][j] < curAge) deadFood += (curAge / 2);
                 else
                 {
-                    deadWater += (age / 2);
+                    food[i][j] -= curAge;
+                    tmp.push_back(curAge + 1);
                 }
             }
 
-            water[i][j] += deadWater;
-            tree[i][j] = move(newTrees);
+            food[i][j] += deadFood;
+            // 살아 남은 나무만 다시 넣음
+            trees[i][j] = tmp;
         }
     }
 }
 
+// 2. 가을 - 5의 배수인 나무 8방향에 나이 1인 나무 생김
 void fall()
 {
-    // 나이가 5의 배수인 나무이면
-    // 인접한 8개의 칸에 나이가 1인 나무가 생긴다
     for(int i = 1; i <= n; i++)
     {
         for(int j = 1; j <= n; j++)
         {
-            int sz = (int)tree[i][j].size();
+            int sz = (int)trees[i][j].size();
 
             if(sz == 0) continue;
 
-            for(int k = 0; k < sz; k++)
+            for(int l = 0; l < sz; l++)
             {
-                int age = tree[i][j][k];
+                int curAge = trees[i][j][l];
 
-                if(age % 5 != 0) continue; 
-                
-                for(int dir = 0; dir < 8; dir++)
+                // 나무 나이가 5의 배수 => 8방향에 나이 1인 나무 생김
+                if(curAge % 5 == 0)
                 {
-                    int nX = i + dx[dir];
-                    int nY = j + dy[dir];
+                    for(int dir = 0; dir < 8; dir++)
+                    {
+                        int nX = i + dx[dir];
+                        int nY = j + dy[dir];
 
-                    if(nX < 1 || nX > n || nY < 1 || nY > n) continue;
+                        if(nX < 1 || nX > n || nY < 1 || nY > n) continue; // 범위 넘으면 패스
 
-                    tree[nX][nY].push_front(1);
+                        trees[nX][nY].push_front(1); // 새로 생긴 나무는 앞에 삽입
+                    }
                 }
             }
         }
     }
 }
 
-// 겨울에는 양분 추가
+
+// 4. 겨울 - 양분 A만큼 추가
 void winter()
 {
     for(int i = 1; i <= n; i++)
     {
         for(int j = 1; j <= n; j++)
         {
-            water[i][j] += A[i][j];
+            food[i][j] += A[i][j];
         }
     }
 }
+
+// 5. 정답 출력
+int getAns()
+{
+    int ans = 0;
+    for(int i = 1; i <= n; i++)
+    {
+        for(int j = 1; j <= n; j++)
+        {
+            ans += (int)trees[i][j].size();
+        }
+    }
+
+    return ans;
+}
+
+
 
 int main()
 {
@@ -113,43 +148,49 @@ int main()
 
     cin >> n >> m >> k;
 
-    // 겨울에 추가되는 양분
     for(int i = 1; i <= n; i++)
     {
         for(int j = 1; j <= n; j++)
         {
             cin >> A[i][j];
-
-            // 양분 처음에 모두 5 들어있음
-            water[i][j] = 5;
         }
     }
 
-    // 나무 나이 입력 받음
+    // 나무 위치 시키기
     for(int i = 0; i < m; i++)
     {
         int x, y, z;
         cin >> x >> y >> z;
 
-        tree[x][y].push_front(z);
+        trees[x][y].push_back(z);
     }
 
-    // 해마다 진행
-    while(k--)
-    {
-        springAndSummer();
-        fall();
-        winter();
-    }
-
+    // 처음에 모든 양분 5
     for(int i = 1; i <= n; i++)
     {
         for(int j = 1; j <= n; j++)
         {
-            ans += (int)tree[i][j].size();
+            food[i][j] = 5;
         }
     }
 
+    while(k--)
+    {
+        // 1. 봄 & 여름 한 번에 처리
+        springAndSummer();
+
+        // printTrees();
+        // printFood();
+
+        // 2. 가을
+        fall();
+
+        // 3. 겨울
+        winter();
+    }
+
+    // 5. 정답 출력
+    int ans = getAns();
     cout << ans << "\n";
 
     return 0;
