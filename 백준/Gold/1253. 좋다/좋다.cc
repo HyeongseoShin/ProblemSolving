@@ -1,61 +1,58 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <climits>
+#include <cstring>
 
 using namespace std;
 
-vector<long long> nums;
+int n;
+vector<int> v;
+int good = 0;
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+int main()
+{
+    ios::sync_with_stdio(0);
+    cin.tie(0);
 
-    int n;
-    
     cin >> n;
+    for(int i = 0; i < n; i++)
+    {
+        int x;
+        cin >> x;
 
-    nums.resize(n);
-
-    for(int i = 0; i < n; i++) {
-        cin >> nums[i];
+        v.push_back(x);
     }
 
-    sort(nums.begin(), nums.end());
+    sort(v.begin(), v.end());
 
-    int cnt = 0;
+    for(int i = 0; i < n; i++)
+    {
+        int l = 0;
+        int r = n - 1;
 
-    for(long long i = 0; i < n; i++) {
-        int s = 0;
-        int e = n - 1;
+        if(l == i) l++;
+        if(r == i) r--;
 
-        while(s < e) {
-            if(nums[s] + nums[e] == nums[i]) {
-                if(s != i && e != i) {
-                    cnt++;
-                    break;
-                }
-
-                else if(s == i) {
-                    s++;
-                }
-
-                else if(e == i) {
-                    e--;
-                }
-                
+        while(l < r && l < n && r >= 0)
+        {
+            int sum = v[l] + v[r];
+            if(v[i] < sum) r--;         
+            else if(v[i] > sum) l++;
+            else
+            {
+                // cout << "v[i]: " << v[i] << " v[l]: " << v[l] << " v[r]: " << v[r] << "\n";
+                good++;
+                break;
             }
-            else if(nums[s] + nums[e] < nums[i]) {
-                s++;
-            }
-            else {
-                e--;
-            }
-            
+
+            if(l == i) l++;
+            if(r == i) r--;
         }
     }
 
-    cout << cnt << "\n";
+    cout << good << "\n";
 
     return 0;
+    
 }
