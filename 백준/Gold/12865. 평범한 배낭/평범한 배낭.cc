@@ -39,13 +39,7 @@ int main()
         }
     }
 
-    int ans = -1;
-    for(int i = 0; i <= k; i++)
-    {
-        ans = max(ans, dp[n][i]);
-    }
-    
-    cout << ans << "\n";
+    cout << dp[n][k] << "\n";
 
     return 0;
 }
