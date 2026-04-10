@@ -48,6 +48,7 @@ int main()
         }
     }
 
+    // 68% 틀렸습니다 원인 : int -> long long
     long long ans = 0;
 
     sort(sumB.begin(), sumB.end());
