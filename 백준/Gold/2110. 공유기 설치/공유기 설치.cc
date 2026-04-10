@@ -43,17 +43,15 @@ int main()
     sort(pos.begin(), pos.end());
 
     int l = 0;
-    int r = 1000000001;
+    int r = 1000000000;
 
     int ans = -1;
-    while(l < r)
+    while(l <= r)
     {
         int mid = (l + r) / 2;
         int cnt = getCnt(mid);
 
-        // cout << "cnt: " << cnt << " mid: " << mid << "\n";
-
-        if(cnt < c) r = mid;
+        if(cnt < c) r = mid - 1;
         else
         {
             ans = max(ans, mid);
