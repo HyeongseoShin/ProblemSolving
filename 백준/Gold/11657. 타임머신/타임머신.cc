@@ -1,75 +1,74 @@
 #include <bits/stdc++.h>
 
 using namespace std;
+
 typedef long long ll;
 
-ll n, m;
+int n, m;
 
-tuple<ll, ll, ll> edges[6005];
+vector<tuple<ll, ll, ll>> edges;
 
+ll dist[501];
 bool isCycle = false;
 
-ll dst[6005];
-
-void GetAns(ll cnt)
+void getAns()
 {
-    dst[1] = 0;
-
-    // n - 1 만큼 반복
-    for(ll i = 0; i < n - 1; i++)
+    // 그래프 연결
+    for(int i = 0; i < n - 1; i++)
     {
-        for(ll j = 0; j < m; j++)
+        for(int j = 0; j < m; j++)
         {
-            auto [s, e, w] = edges[j];
-            if(dst[s] != LLONG_MAX && dst[e] > dst[s] + w)
+            auto [w, s, e] = edges[j];
+            
+            if(dist[s] != LLONG_MAX && dist[e] > dist[s] + w)
             {
-                dst[e] = dst[s] + w;
-
-                if(cnt == 1)
-                {
-                    isCycle = true;
-                    break;
-                }
+                dist[e] = dist[s] + w;
             }
+            
         }
     }
-    
+
+    // 음수 사이클 확인
+    // 모든 edges 순회하며 업데이트 발생 -> 사이클
+    for(int i = 0; i < m; i++)
+    {
+        auto [w, s, e] = edges[i];
+        if(dist[s] != LLONG_MAX && dist[e] > dist[s] + w)
+        {
+            isCycle = true;
+            return;
+        }
+    }
 }
 
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    
-    cin >> n >> m;
 
-    for(ll i = 0; i < m; i++)
+    cin >> n >> m;
+    for(int i = 0; i < m; i++)
     {
         ll a, b, c;
         cin >> a >> b >> c;
-
-        edges[i] = {a, b, c};
+        edges.push_back({c, a, b});
     }
 
-    fill(dst, dst + n + 1, LLONG_MAX);
-    GetAns(0);
+    fill(dist, dist + n + 1, LLONG_MAX);
+    dist[1] = 0;
+    getAns();
 
-    GetAns(1);
-
-    if(isCycle) cout << "-1\n";
-
-    else
+    if(isCycle)
     {
-        for(ll i = 2; i <= n; i++)
-        {
-            if(dst[i] == LLONG_MAX) cout << "-1\n";
-            else cout << dst[i] << "\n";
-        }
+        cout << "-1\n";
+        return 0;
     }
 
-
-
-    
+    for(int i = 2; i <= n; i++)
+    {
+        if(dist[i] == LLONG_MAX) dist[i] = -1;
+        cout << dist[i] << "\n";
+    }
 
     return 0;
 }
