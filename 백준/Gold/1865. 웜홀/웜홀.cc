@@ -1,72 +1,75 @@
-#include <iostream>
-#include <string>
-#include <vector>
-
-#define MAX 30'000'000
+#include <bits/stdc++.h>
 
 using namespace std;
 
+#define MAX 30000000
 int n, m, w;
 
-struct edge {
-	int s, e, t;
-};
+vector<tuple<int, int, int>> edges;
 
-bool time_travel(int n, vector<edge> edges) {
-	vector<int> dist(n + 1, MAX);
+bool GetAns()
+{
+    int dist[501];
+    fill(dist, dist + n + 1, MAX);
+    dist[1] = 0;
 
-	int s, e, t;
-	dist[1] = 0;
-	for (int i = 1; i < n; i++) {
-		for (int j = 0; j < edges.size(); j++) {
-			s = edges[j].s;
-			e = edges[j].e;
-			t = edges[j].t;
-			if (dist[e] > dist[s] + t) {
-				dist[e] = dist[s] + t;
-			}
-		}
-	}
-	for (int j = 0; j < edges.size(); j++) {
-		s = edges[j].s;
-		e = edges[j].e;
-		t = edges[j].t;
-		if (dist[e] > dist[s] + t) {
-			return true;
-		}
-	}
+    for(int i = 1; i <= n - 1; i++)
+    {
+        for(int j = 0; j < (int)edges.size(); j++)
+        {
+            auto [s, e, t] = edges[j];
+            if(dist[e] > dist[s] + t)
+            {
+                dist[e] = dist[s] + t;
+            }
+        }
+    }
 
-	return false;
+    for(int j = 0; j < (int)edges.size(); j++)
+    {
+        auto [s, e, t] = edges[j];
+        if(dist[e] > dist[s] + t)
+        {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 int main()
 {
-	cin.tie(NULL); cout.tie(NULL); ios_base::sync_with_stdio(false);
+    ios::sync_with_stdio(0);
+    cin.tie(0);
 
-	int TC;
-	cin >> TC;
+    int tc;
+    cin >> tc;
 
-	int s, e, t;
-	while (TC > 0) {
-		cin >> n >> m >> w;
+    while(tc--)
+    {
+        cin >> n >> m >> w;
 
-		vector<edge> edges;
+        edges.clear();
+        for(int i = 0; i < m; i++)
+        {
+            int st, en, t;
+            cin >> st >> en >> t;
 
-		for (int i = 0; i < m; i++) {
-			cin >> s >> e >> t;
-			edges.push_back({ s,e,t });
-			edges.push_back({ e,s,t });
-		}
-		for (int i = 0; i < w; i++) {
-			cin >> s >> e >> t;
-			edges.push_back({ s,e,-t });
-		}
+            edges.push_back({st, en, t});
+            edges.push_back({en, st, t});
+        }
 
-		if (time_travel(n, edges)) cout << "YES\n";
-		else cout << "NO\n";
+        for(int i = 0; i < w; i++)
+        {
+            int st, en, t;
+            cin >> st >> en >> t;
 
-		TC--;
-	}
+            edges.push_back({st, en, -t});
+        }
 
-	return 0;
+        if(GetAns()) cout << "YES\n";
+        else cout << "NO\n";
+    }
+
+    return 0;
 }
