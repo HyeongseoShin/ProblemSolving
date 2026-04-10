@@ -17,26 +17,32 @@ int inDegree[101];
 // dp[i][j] : i를 만드는 데 필요한 j 부품 개수
 int dp[101][101];
 
-// adj[i]: <완성 부품, 개수> -> i 부품 ~ 개수 써서 완성 부품 만듦
-vector<pair<int, int>> adj[101];
-queue<int> q;
+// adj[i]: <필요 부품, 개수>
+vector<pair<int, int>> parts[101];
 
-void getAns()
+bool isBasic[101];
+
+bool vis[101];
+
+void solve(int cur)
 {
-    while(!q.empty())
+    if(vis[cur]) return;
+    vis[cur] = true;
+
+    // 기본 부품
+    if(isBasic[cur])
     {
-        int cur = q.front();
-        q.pop();
+        dp[cur][cur] = 1;
+        return;
+    }
 
-        for(auto [nxt, cnt] : adj[cur])
+    for(auto [nxt, cnt] : parts[cur])
+    {
+        solve(nxt);
+
+        for(int i = 1; i <= n; i++)
         {
-            for(int i = 1; i <= n; i++)
-            {
-                dp[nxt][i] += (dp[cur][i] * cnt);
-            }
-
-            inDegree[nxt]--;
-            if(inDegree[nxt] == 0) q.push(nxt);
+            dp[cur][i] += dp[nxt][i] * cnt;
         }
     }
 }
@@ -48,32 +54,21 @@ int main()
 
     cin >> n >> m;
 
+    memset(isBasic, true, sizeof(isBasic));
     for(int i = 0; i < m; i++)
     {
         int x, y, k;
         cin >> x >> y >> k;
 
-        // 그래프 뒤집기
-        // 기본 -> 중간 -> 완성품
-        adj[y].push_back({x, k});
-        inDegree[x]++;
+        parts[x].push_back({y, k});
+        isBasic[x] = false;
     }
 
-    // 기본 부품 삽입
-    for(int i = 1; i < n; i++)
-    {
-        if(inDegree[i] == 0)
-        {
-            dp[i][i] = 1;
-            q.push(i);
-        }
-    }
-
-    getAns();
+    solve(n);
 
     for(int i = 1; i < n; i++)
     {
-        if(dp[n][i] > 0) cout << i << " " << dp[n][i] << "\n";
+        if(isBasic[i]) cout << i << " " << dp[n][i] << "\n";
     }
 
     return 0;
