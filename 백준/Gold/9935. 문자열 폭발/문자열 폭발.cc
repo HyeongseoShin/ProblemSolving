@@ -1,14 +1,10 @@
-// https://www.acmicpc.net/problem/9935
-// 스택
-
-// 스스로 못풂
 #include <bits/stdc++.h>
 
 using namespace std;
 
-int n;
 string s;
 string bomb;
+
 stack<char> stk;
 
 int main()
@@ -19,25 +15,27 @@ int main()
     cin >> s;
     cin >> bomb;
 
-    n = s.length();
+    int n1 = s.length();
+    int n2 = bomb.length();
 
-    int idx = bomb.length() - 1;
-    char last = bomb[idx];
-    
-    for(int i = 0; i < n; i++)
+    char lastChar = bomb[n2-1];
+
+    int idx;
+    for(int i = 0; i < n1; i++)
     {
         stk.push(s[i]);
 
-        if(stk.top() == last)
+        if(s[i] == lastChar)
         {
-            string tmp;
+            idx = n2 - 1;
+            string tmp = "";
 
-            for(int j = 0; j < bomb.length() && !stk.empty(); j++)
+            while(!stk.empty() && idx >= 0 && stk.top() == bomb[idx--])
             {
                 tmp += stk.top();
                 stk.pop();
             }
-
+            
             reverse(tmp.begin(), tmp.end());
 
             if(tmp != bomb)
@@ -48,24 +46,22 @@ int main()
                 }
             }
         }
-        
     }
 
-    if(stk.empty()) cout << "FRULA" << "\n";
+    string ans = "";
+    while(!stk.empty())
+    {
+        // cout << stk.top();
+        ans += stk.top();
+        stk.pop();
+    }
 
+    if(ans == "") cout << "FRULA" << "\n";
     else
     {
-        string ans;
-        while(!stk.empty())
-        {
-            ans += stk.top();
-            stk.pop();
-        }
-
         reverse(ans.begin(), ans.end());
-
         cout << ans << "\n";
     }
-    
+
     return 0;
 }
