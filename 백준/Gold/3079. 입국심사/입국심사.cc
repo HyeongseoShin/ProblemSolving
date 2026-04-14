@@ -3,29 +3,22 @@
 using namespace std;
 
 typedef long long ll;
-#define MAX 1000001
 
 int n, m;
 
-ll t[MAX];
+// 심사관마다 걸리는 심사 시간
+vector<ll> simsa;
 
-ll ans = 0;
-
-ll minTime = LLONG_MAX;
-
-// target초만에 모든 사람들이 심사받을 수 있는지?
-bool isPossible(ll target)
-{   
-    ll cnt = 0;
-
-    // target초 동안 검사할 수 있는 최대 인원 구하기
+ll getAns(ll target)
+{
+    ll ret = 0LL;
     for(int i = 0; i < n; i++)
     {
-        cnt += (target / t[i]);
-        if(cnt >= m) return true;
+        ret += (target / simsa[i]);
+        if(ret >= m) break;
     }
 
-    return false;
+    return ret;
 }
 
 int main()
@@ -37,24 +30,31 @@ int main()
 
     for(int i = 0; i < n; i++)
     {
-        cin >> t[i];
-        minTime = min(minTime, t[i]);
+        ll x;
+        cin >> x;
+
+        simsa.push_back(x);
     }
-    
-    // 매개 변수 탐색
-    // 변수 : 모든 사람들이 심사를 모두 마치게 되는 시간
-    ll st = 1;
-    ll en = minTime * m;
+
+    ll st = 0LL;
+    ll en = LLONG_MAX;
+    ll ans = LLONG_MAX;
 
     while(st <= en)
     {
         ll mid = (st + en) / 2;
 
-        if(isPossible(mid))
+        ll result = getAns(mid);
+        // cout << "st: " << st << " en: " << en << " mid: " << mid << " result: " << result << "\n";
+
+        // 모든 사람 끝낼 수 있다면
+        if(result >= m)
         {
-            ans = mid;
+            ans = min(ans, mid);
             en = mid - 1;
         }
+
+        // 끝낼 수 없다면
         else st = mid + 1;
     }
 
