@@ -17,15 +17,15 @@ int solution(string message, vector<vector<int>> spoiler_ranges) {
     set<string> seen;              // 비스포 단어 + 이미 공개된 스포 단어
     vector<string> spoilerWords;   // 스포 단어들을 메시지 순서대로 저장
 
-    int i = 0;
-    while (i < n) {
-        int j = i;
-        while (j < n && message[j] != ' ') j++;
+    int st = 0;
+    while (st < n) {
+        int en = st;
+        while (en < n && message[en] != ' ') en++;
 
-        string word = message.substr(i, j - i);
+        string word = message.substr(st, en - st);
 
         bool isSpoilerWord = false;
-        for (int k = i; k < j; k++) {
+        for (int k = st; k < en; k++) {
             if (blocked[k]) {
                 isSpoilerWord = true;
                 break;
@@ -35,18 +35,18 @@ int solution(string message, vector<vector<int>> spoiler_ranges) {
         if (isSpoilerWord) spoilerWords.push_back(word);
         else seen.insert(word);
 
-        i = j + 1; // 다음 단어 시작
+        st = en + 1; // 다음 단어 시작
     }
 
-    int answer = 0;
+    int ans = 0;
 
     // 스포 단어 공개 순서는 메시지에서의 단어 순서와 같음
     for (auto &word : spoilerWords) {
         if (seen.find(word) == seen.end()) {
-            answer++;
+            ans++;
         }
         seen.insert(word); // 공개됐으므로 이후 중복 체크 대상
     }
 
-    return answer;
+    return ans;
 }
