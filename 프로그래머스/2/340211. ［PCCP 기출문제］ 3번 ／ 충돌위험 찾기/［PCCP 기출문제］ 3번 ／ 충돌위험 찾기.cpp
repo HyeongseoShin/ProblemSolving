@@ -63,23 +63,20 @@ int solution(vector<vector<int>> points, vector<vector<int>> routes) {
         maxLen = max(maxLen, (int)path[i].size());
     }
     
+    // 초마다 로봇 순회하며 같은 칸에 있는지 확인
     int dangerCnt[105][105];
-    
     for(int i = 0; i < maxLen; i++)
     {
         memset(dangerCnt, 0, sizeof(dangerCnt));
-        set<pair<int, int>> check;
+        
         for(int j = 0; j < x; j++)
         {
             if(i >= path[j].size()) continue;
             auto [curX, curY] = path[j][i];
             dangerCnt[curX][curY]++;
-            check.insert({curX, curY});
-        }
-        
-        for(auto [x, y] : check)
-        {
-            if(dangerCnt[x][y] > 1) ans++;
+            
+            if(dangerCnt[curX][curY] == 2) ans++;
+            
         }
     }
     
