@@ -1,73 +1,74 @@
+// 완전 탐색
+
 #include <bits/stdc++.h>
 
 using namespace std;
 
 int n, m;
-vector<int> ans;
 
-// <이모티콘 플러스, 판매액>
-pair<int, int> comb;
+int maxPerson = -1;
+int maxMoney = -1;
 
-// 비율, 가격
-vector<pair<int, int>> Users;
-vector<int> Emoticons;
-
-int rate[10];
-int percent[4] = {10, 20, 30, 40};
-
-void getComb()
+void getMaxPersonAndMoney(vector<vector<int>> users, vector<int> emoticons, vector<int> discount)
 {
-    pair<int, int> cur = {0, 0};
+    int curPerson = 0;
+    int curMoney = 0;
+    
     for(int i = 0; i < n; i++)
     {
-        auto [curCnt, curP] = cur;
-        auto [curRate, curPrice] = Users[i];
-        int curSum = 0;
+        int limitPercentage = users[i][0];
+        int limitMoney = users[i][1];
+        
+        int tmpMoney = 0;
         for(int j = 0; j < m; j++)
         {
-            // 이모티콘 일정 이상 할인하면 산다.
-            if(rate[j] >= curRate)
-            {
-                curSum += ((Emoticons[j] / 100) * (100 - rate[j]));
-            }
+            if(discount[j] < limitPercentage) continue;
+            
+            tmpMoney += (emoticons[j] * (100 - discount[j])) / 100;
         }
         
-        // 이모티콘 플러스로 전환
-        if(curSum >= curPrice) cur = {curCnt+1, curP};
-        else cur = {curCnt, curP + curSum};
+        if(tmpMoney >= limitMoney) curPerson++;
+        else curMoney += tmpMoney;
     }
     
-    comb = max(comb, cur);
-}
-void getAns(int idx)
-{
-    if(idx >= m)
+    if(maxPerson < curPerson
+      || maxPerson == curPerson && maxMoney < curMoney)
     {
-        getComb();
+        maxPerson = curPerson;
+        maxMoney = curMoney;
+    }
+}
+void getAns(int cur, vector<vector<int>> users, vector<int> emoticons, vector<int> discount)
+{
+    if(cur == m)
+    {
+        getMaxPersonAndMoney(users, emoticons, discount);
         return;
     }
     
-    for(int i = 0; i < 4; i++)
+    for(int i = cur; i < m; i++)
     {
-        rate[idx] = percent[i];
-        getAns(idx + 1);
+        for(int j = 1; j <= 4; j++)
+        {
+            discount[i] = 10 * j;
+            getAns(i+1, users, emoticons, discount);
+        }
     }
 }
 
 vector<int> solution(vector<vector<int>> users, vector<int> emoticons) {
+    vector<int> ans;
+    
     n = (int)users.size();
     m = (int)emoticons.size();
     
-    for(int i = 0; i < n; i++) Users.push_back({users[i][0], users[i][1]});
-    for(int i = 0; i < m; i++) Emoticons.push_back(emoticons[i]);
+    vector<int> discount; // 각 이모티콘별 할인율
+    discount.resize(m, 0);
     
-    getAns(0);
+    getAns(0, users, emoticons, discount);
     
-    auto [ansCnt, ansP] = comb;
-    
-    ans.push_back(ansCnt);
-    ans.push_back(ansP);
-    
+    ans.push_back(maxPerson);
+    ans.push_back(maxMoney);
     
     return ans;
 }
