@@ -1,58 +1,79 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
 int ans = 0;
-vector<int> child[20];
+int n;
 
-void dfs(int sheep, int wolf, vector<int> candidates, vector<int>& info)
+vector<int> adj[20];
+
+// <i, 양의 수, 늑대의 수>
+bool vis[20][20][20];
+
+// 백트래킹
+void dfs(int cur, int curSheep, int curWolf, vector<int> &info)
 {
-    if(sheep <= wolf) return;
-
-    ans = max(ans, sheep);
-
-    for(int i = 0; i < (int)candidates.size(); i++)
+    if(curSheep <= curWolf) return; // 늑대가 더 많은 경우 불가능
+    ans = max(ans, curSheep);
+    
+    for(int nxt : adj[cur])
     {
-        int cur = candidates[i];
-
-        int nextSheep = sheep;
-        int nextWolf = wolf;
-
-        if(info[cur] == 0) nextSheep++;
-        else nextWolf++;
-
-        vector<int> nextCandidates = candidates;
-
-        // 현재 방문한 노드는 후보에서 제거
-        nextCandidates.erase(nextCandidates.begin() + i);
-
-        // 현재 노드의 자식들을 새 후보로 추가
-        for(int nxt : child[cur])
+        // 양인 경우
+        if(info[nxt] == 0 && !vis[nxt][curSheep+1][curWolf])
         {
-            nextCandidates.push_back(nxt);
+            info[nxt] = -1;
+            vis[nxt][curSheep+1][curWolf] = true;
+            
+            dfs(nxt, curSheep+1, curWolf, info);
+            
+            vis[nxt][curSheep+1][curWolf] = false;
+            info[nxt] = 0;
         }
+        
+        // 늑대인 경우
+        else if(info[nxt] == 1)
+        {
+            if(curSheep > curWolf+1 && !vis[nxt][curSheep][curWolf+1])
+            {
+                info[nxt] = -1;
+                vis[nxt][curSheep][curWolf+1] = true;
 
-        dfs(nextSheep, nextWolf, nextCandidates, info);
+                dfs(nxt, curSheep, curWolf+1, info);
+
+                vis[nxt][curSheep][curWolf+1] = false;
+                info[nxt] = 1;
+            }
+        }
+        
+        // 이미 지난 곳인 경우
+        else 
+        {
+            if(!vis[nxt][curSheep][curWolf])
+            {
+                vis[nxt][curSheep][curWolf] = true;
+                dfs(nxt, curSheep, curWolf, info);
+                vis[nxt][curSheep][curWolf] = false;    
+            }
+            
+        }
     }
 }
 
 int solution(vector<int> info, vector<vector<int>> edges) {
-    for(auto edge : edges)
+    n = (int)info.size();
+    
+    for(int i = 0; i < n - 1; i++)
     {
-        int parent = edge[0];
-        int node = edge[1];
-
-        child[parent].push_back(node);
+        int u = edges[i][0];
+        int v = edges[i][1];
+        
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
-
-    vector<int> candidates;
-
-    // 0번 노드는 처음에 이미 방문했고, 0번의 자식들이 다음 후보
-    for(int nxt : child[0])
-    {
-        candidates.push_back(nxt);
-    }
-
-    dfs(1, 0, candidates, info);
-
+    
+    info[0] = -1;
+    vis[0][1][0] = true;
+    dfs(0, 1, 0, info);
+    
     return ans;
 }
