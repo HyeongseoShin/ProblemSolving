@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int tc;
+int n;
+int board[10][10];
+
+int main()
+{
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+
+    cin >> tc;
+
+    for(int t = 1; t <= tc; t++)
+    {
+        cin >> n;
+
+        string ans[10][10];
+
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                cin >> board[i][j];
+            }
+        }
+
+        int tmpBoard[10][10];
+
+        for(int cnt = 0; cnt < 3; cnt++)
+        {
+            memcpy(tmpBoard, board, sizeof(board));
+
+            for(int i = 0; i < n; i++)
+            {
+                for(int j = 0; j < n; j++)
+                {
+                    board[j][n - 1 - i] = tmpBoard[i][j];
+                }
+            }
+
+            for(int i = 0; i < n; i++)
+            {
+                for(int j = 0; j < n; j++)
+                {
+                    ans[i][cnt] += (board[i][j] + '0');
+                }
+            }
+        }
+
+        cout << "#" << t << "\n";
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < 3; j++)
+            {
+                cout << ans[i][j] << " ";
+            }
+            cout << "\n";
+        }
+        
+    }
+
+    return 0;
+}
